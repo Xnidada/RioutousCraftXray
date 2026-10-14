@@ -3,10 +3,10 @@ package com.xray.reference;
 public class Reference {
 
     // Mod Constants
-    public static final String MOD_ID = "xray";
-    public static final String MOD_NAME = "Advanced XRay";
-    public static final String MOD_VERSION = "2.0.0";
-    public static final String UPDATE_JSON = "https://raw.githubusercontent.com/MichaelHillcox/XRay-Mod/master/versions.json";
+    public static final String MOD_ID = "rioutouscraftxray";
+    public static final String MOD_NAME = "RioutousCraftXray";
+    public static final String MOD_VERSION = "1.0.0";
+    public static final String UPDATE_JSON = "";
 
     // UI Constants
     public static final String PREFIX_MOD = MOD_ID+":";

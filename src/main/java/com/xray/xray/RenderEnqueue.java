@@ -5,7 +5,9 @@ import com.xray.XRay;
 import com.xray.reference.block.BlockData;
 import com.xray.reference.block.BlockInfo;
 import com.xray.utils.WorldRegion;
+import com.xray.utils.OutlineColor;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -96,12 +98,14 @@ public class RenderEnqueue implements Runnable
 
 								defaultState = currentState.getBlock().getDefaultState();
 
-								boolean defaultExists = blocks.containsKey(defaultState.toString());
-								boolean currentExists = blocks.containsKey(currentState.toString());
+								boolean poweredTarget = Controller.drawsTarget(currentState.toString()) || Controller.drawsTarget(defaultState.toString());
+								boolean defaultExists = poweredTarget || blocks.containsKey(defaultState.toString());
+								boolean currentExists = poweredTarget || blocks.containsKey(currentState.toString());
 								if( !defaultExists && !currentExists )
 									continue;
 
 								blockData = blocks.get(currentExists ? currentState.toString() : defaultState.toString());
+				if (poweredTarget && blockData == null) blockData = new BlockData(currentState.toString(), currentState.getBlock().getLocalizedName(), Block.getStateId(currentState), new OutlineColor(255,255,255), new net.minecraft.item.ItemStack(currentState.getBlock()), true, 0);
 								if( blockData == null || !blockData.isDrawing() ) // fail safe
 									continue;
 

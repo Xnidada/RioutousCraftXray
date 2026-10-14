@@ -71,6 +71,7 @@ public class GuiSelectionScreen extends GuiBase
 		this.buttonList.add( new GuiButton(BUTTON_ADD_LOOK, width / 2 + 79, height / 2 - 16, 120, 20, I18n.format("xray.input.add_look") ) );
 
 		this.buttonList.add( distButtons = new GuiButton(BUTTON_RADIUS, (width / 2) + 79, height / 2 + 36, 120, 20, I18n.format("xray.input.distance")+": "+ Controller.getRadius()) );
+		distButtons.enabled = false;
 		this.buttonList.add( new GuiButton(BUTTON_HELP, width / 2 + 79, height / 2 + 58, 60, 20, I18n.format("xray.single.help") ) );
 		this.buttonList.add( new GuiButton(BUTTON_CLOSE, (width / 2 + 79) + 62, height / 2 + 58, 59, 20, I18n.format("xray.single.close") ) );
     }
@@ -82,8 +83,7 @@ public class GuiSelectionScreen extends GuiBase
 		switch(button.id)
 		{
 			case BUTTON_RADIUS:
-				Controller.incrementCurrentDist();
-				break;
+				break; // Radius is fixed by the worn glasses tier.
 
 			case BUTTON_ADD_BLOCK:
 				mc.player.closeScreen();
@@ -181,13 +181,7 @@ public class GuiSelectionScreen extends GuiBase
 		super.mouseClicked( x, y, mouse );
 		search.mouseClicked(x, y, mouse );
 
-		if( mouse == 1 ) {
-			if( distButtons.mousePressed(this.mc, x, y) )
-			{
-				Controller.decrementCurrentDist();
-				distButtons.displayString = I18n.format("xray.input.distance")+": "+ Controller.getRadius();
-			}
-		}
+		// The radius button is deliberately disabled; it is item-tier data.
 	}
 
 	@Override

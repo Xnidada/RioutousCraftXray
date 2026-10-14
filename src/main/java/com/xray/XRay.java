@@ -37,7 +37,7 @@ import java.util.List;
 		name= Reference.MOD_NAME,
 		version=Reference.MOD_VERSION,
 		updateJSON= Reference.UPDATE_JSON,
-
+		dependencies = "required-after:ic2@[2.8.222,)",
 		clientSideOnly = true
 )
 

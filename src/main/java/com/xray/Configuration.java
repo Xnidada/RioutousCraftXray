@@ -3,7 +3,7 @@ package com.xray;
 import com.xray.reference.Reference;
 import net.minecraftforge.common.config.Config;
 
-@Config(modid = Reference.MOD_ID, name = "advanced_xray", type = Config.Type.INSTANCE)
+@Config(modid = Reference.MOD_ID, name = "rioutouscraftxray", type = Config.Type.INSTANCE)
 public class Configuration
 {
     @Config.Comment({

@@ -10,6 +10,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import com.xray.item.ItemXrayGlasses;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -50,9 +54,26 @@ public class Controller
     }
 
     // Public accessors
-	public static boolean drawOres() { return drawOres && XRay.mc.world != null && XRay.mc.player != null; }
+	public static ItemXrayGlasses getGlasses() {
+		if (XRay.mc.player == null) return null;
+		ItemStack stack = XRay.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+		return stack.getItem() instanceof ItemXrayGlasses && ((ItemXrayGlasses) stack.getItem()).isUsable(stack) ? (ItemXrayGlasses) stack.getItem() : null;
+	}
+	public static ItemStack getGlassesStack() {
+		return XRay.mc.player == null ? ItemStack.EMPTY : XRay.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+	}
+	public static boolean drawsTarget(String state) {
+		ItemXrayGlasses item = getGlasses();
+		if (item == null) return false;
+		return item.hasTarget(getGlassesStack(), state);
+	}
+	public static boolean drawOres() { return drawOres && XRay.mc.world != null && XRay.mc.player != null && getGlasses() != null; }
 	public static void toggleDrawOres()
 	{
+		if (!drawOres && getGlasses() == null) {
+			if (XRay.mc.player != null) XRay.mc.player.sendMessage(new TextComponentString("RioutousCraftXray: 请佩戴有电且已配置矿物的眼镜"));
+			return;
+		}
 		if ( !drawOres ) // enable drawing
 		{
 			Render.ores.clear(); // first, clear the buffer
@@ -72,7 +93,7 @@ public class Controller
 		}
 	}
 
-	public static int getRadius() { return distanceList[Configuration.radius]; }
+	public static int getRadius() { ItemXrayGlasses glasses = getGlasses(); return glasses == null ? 0 : glasses.radius; }
 
 	public static void incrementCurrentDist()
 	{

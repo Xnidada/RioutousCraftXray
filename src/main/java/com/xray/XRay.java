@@ -1,6 +1,8 @@
 package com.xray;
 
 import com.xray.gui.GuiOverlay;
+import com.xray.item.ModItems;
+import com.xray.item.ModRecipes;
 import com.xray.keybinding.InputEvent;
 import com.xray.keybinding.KeyBindings;
 import com.xray.reference.Reference;
@@ -48,6 +50,14 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class XRay
 {
+	public XRay()
+	{
+		// Registry events are posted on MinecraftForge.EVENT_BUS in Forge 1.12.2.
+		// Register these subscribers during mod construction, before the registry phase.
+		MinecraftForge.EVENT_BUS.register(ModItems.class);
+		MinecraftForge.EVENT_BUS.register(ModRecipes.class);
+	}
+
 	// This contains all of the games blocks to allow us to reference them
 	// when needed. This allows us to avoid continually rebuilding
 	public static GameBlockStore gameBlockStore = new GameBlockStore();

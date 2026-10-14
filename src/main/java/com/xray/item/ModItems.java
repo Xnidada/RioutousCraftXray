@@ -3,10 +3,6 @@ package com.xray.item;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import com.xray.reference.Reference;
-
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public final class ModItems {
     public static final ItemXrayGlasses[] GLASSES = {
         new ItemXrayGlasses(1, 30000, 4, 1), new ItemXrayGlasses(2, 60000, 6, 2),

@@ -1,5 +1,6 @@
 package com.xray.item;
 
+import com.xray.reference.Reference;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -9,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class ItemXrayGlasses extends ItemArmor {
         this.tier = tier; this.capacity = capacity; this.radius = radius; this.slots = slots;
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.COMBAT);
-        setRegistryName("glasses_l" + tier);
+        setRegistryName(new ResourceLocation(Reference.MOD_ID, "glasses_l" + tier));
         setUnlocalizedName("rioutouscraftxray.glasses_l" + tier);
     }
 

@@ -6,20 +6,6 @@ import net.minecraftforge.common.config.Config;
 @Config(modid = Reference.MOD_ID, name = "rioutouscraftxray", type = Config.Type.INSTANCE)
 public class Configuration
 {
-    @Config.Comment({
-            "DO NOT TOUCH!",
-            "This setting is for memory only and if changed to a value not supported",
-            "the game will crash on start up. This value can be changed in game very simply.",
-            "If you must change it then these are the valid values 0 -> 7",
-            "but please leave it alone :P"
-    })
-    @Config.RangeInt(min = 0, max = 7)
-    public static int radius = 3;
-
-    @Config.Name("Show XRay overlay")
-    @Config.Comment("This allows you hide or show the overlay in the top right of the screen when XRay is enabled")
-    public static boolean showOverlay = true;
-
     @Config.Name("Fading Affect")
     @Config.Comment({
             "By default the blocks will begin to fade out as you get further away, some may not like this as",

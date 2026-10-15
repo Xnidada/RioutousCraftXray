@@ -16,6 +16,6 @@ public class ClientProxy extends CommonProxy {
         ClientState.initialize(event);
     }
     @Override public void init(FMLInitializationEvent event) {}
-    @Override public void postInit(FMLPostInitializationEvent event) { ClientState.gameBlockStore.populate(); }
+    @Override public void postInit(FMLPostInitializationEvent event) {}
     @Override public void onServerStopping(FMLServerStoppingEvent event) { Controller.shutdownExecutor(); }
 }

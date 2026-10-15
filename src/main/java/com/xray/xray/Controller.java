@@ -1,22 +1,16 @@
 package com.xray.xray;
 
-import com.xray.Configuration;
 import com.xray.client.ClientState;
-import com.xray.store.BlockStore;
 import com.xray.utils.WorldRegion;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import com.xray.item.ItemXrayGlasses;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,9 +18,6 @@ import java.util.concurrent.Future;
 
 public class Controller
 {
-    // Radius +/- around the player to search. So 8 is 8 on left and right of player plus under the player. So 17x17 area.
-    private static final int[] distanceList = new int[] {8, 16, 32, 48, 64, 80, 128, 256};
-
     // Block blackList
 	public static ArrayList blackList = new ArrayList<Block>() {{
 		add(Blocks.AIR);
@@ -38,26 +29,13 @@ public class Controller
 
 	private static Vec3i lastPlayerPos = null;
 
-	/**
-     * Global blockStore used for:
-     * [Rendering, GUI, Configuration Handling]
-     */
-	private static BlockStore blockStore = new BlockStore();
-
 	// Thread management
 	private static Future task;
     private static ExecutorService executor;
 
-	// Draw states
-	private static boolean drawOres = false; // Off by default
-
-    public static BlockStore getBlockStore() {
-        return blockStore;
-    }
-
     // Public accessors
 	public static ItemXrayGlasses getGlasses() {
-		if (ClientState.mc.player == null) return null;
+		if (ClientState.mc == null || ClientState.mc.player == null) return null;
 		ItemStack stack = ClientState.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 		return stack.getItem() instanceof ItemXrayGlasses && ((ItemXrayGlasses) stack.getItem()).isUsable(stack) ? (ItemXrayGlasses) stack.getItem() : null;
 	}
@@ -69,49 +47,13 @@ public class Controller
 		if (item == null) return false;
 		return item.hasTarget(getGlassesStack(), state);
 	}
-	public static boolean drawOres() { return drawOres && ClientState.mc.world != null && ClientState.mc.player != null && getGlasses() != null; }
-	public static void toggleDrawOres()
-	{
-		if (!drawOres && getGlasses() == null) {
-			if (ClientState.mc.player != null) ClientState.mc.player.sendMessage(new TextComponentString("RioutousCraftXray: 请佩戴有电且已配置矿物的眼镜"));
-			return;
-		}
-		if ( !drawOres ) // enable drawing
-		{
-			Render.clearOres(); // first, clear the buffer
-			executor = Executors.newSingleThreadExecutor();
-			drawOres = true; // then, enable drawing
-			requestBlockFinder( true ); // finally, force a refresh
-
-			if( !Configuration.showOverlay )
-				ClientState.mc.player.sendMessage( new TextComponentString(I18n.format("xray.toggle.activated")) );
-		}
-		else // disable drawing
-		{
-			if( !Configuration.showOverlay )
-				ClientState.mc.player.sendMessage( new TextComponentString(I18n.format("xray.toggle.deactivated")) );
-
-			shutdownExecutor();
-		}
+    /** X-Ray is active automatically while a configured, powered helmet is worn. */
+	public static boolean drawOres() {
+		return ClientState.mc != null && ClientState.mc.world != null
+				&& ClientState.mc.player != null && getGlasses() != null;
 	}
 
 	public static int getRadius() { ItemXrayGlasses glasses = getGlasses(); return glasses == null ? 0 : glasses.radius; }
-
-	public static void incrementCurrentDist()
-	{
-		if ( Configuration.radius < distanceList.length - 1 )
-			Configuration.radius++;
-		else
-			Configuration.radius = 0;
-	}
-
-	public static void decrementCurrentDist()
-	{
-		if ( Configuration.radius > 0 )
-			Configuration.radius--;
-		else
-			Configuration.radius = distanceList.length - 1;
-	}
 
 	/**
 	 * Precondition: world and player must be not null
@@ -144,18 +86,18 @@ public class Controller
 	public static synchronized void requestBlockFinder( boolean force )
 	{
 		if (!drawOres()) {
-			if (drawOres) shutdownExecutor();
+			if (executor != null || task != null) shutdownExecutor();
 			return;
 		}
-		if ( drawOres() && (task == null || task.isDone()) && (force || playerHasMoved()) ) // world/player check done by drawOres()
+		if (executor == null || executor.isShutdown()) executor = Executors.newSingleThreadExecutor();
+		if ((task == null || task.isDone()) && (force || playerHasMoved()))
 		{
 			updatePlayerPosition(); // since we're about to run, update the last known position
 			WorldRegion region = new WorldRegion( lastPlayerPos, getRadius() ); // the region to scan for ores
 			ItemXrayGlasses glasses = getGlasses();
 			if (glasses == null) return;
 			List<BlockSnapshot> snapshot = WorldSnapshot.capture(ClientState.mc.world, region);
-			HashMap<String, com.xray.reference.block.BlockData> blocks = new HashMap<>(getBlockStore().getStore());
-			task = executor.submit(new RenderEnqueue(snapshot, blocks, glasses, getGlassesStack().copy(), new net.minecraft.util.math.BlockPos(lastPlayerPos), glasses.radius));
+			task = executor.submit(new RenderEnqueue(snapshot, glasses, getGlassesStack().copy(), new net.minecraft.util.math.BlockPos(lastPlayerPos), glasses.radius));
 		}
 	}
 
@@ -164,12 +106,11 @@ public class Controller
 	 */
 	public static void shutdownExecutor()
 	{
-		// Important. If drawOres is true when a player logs out then logs back in, the next requestBlockFinder will crash
-		drawOres = false;
 		try { executor.shutdownNow(); }
 		catch (Throwable ignore) {}
 		executor = null;
 		task = null;
+		lastPlayerPos = null;
 		Render.clearOres();
 	}
 }

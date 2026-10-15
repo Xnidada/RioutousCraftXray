@@ -36,7 +36,14 @@ public class XrayGlassesRecipe extends IForgeRegistryEntry.Impl<IRecipe> impleme
     @Override public ItemStack getCraftingResult(InventoryCrafting inv) {
         ItemStack ore = findOre(inv); ItemStack out = new ItemStack(glasses);
         for (int i = 0; i < inv.getSizeInventory(); i++) if (inv.getStackInSlot(i).getItem() == glasses) { out = inv.getStackInSlot(i).copy(); out.setCount(1); break; }
-        if (!ore.isEmpty()) { Block block = Block.getBlockFromItem(ore.getItem()); if (block != null) { boolean firstTarget = !glasses.hasConfiguredTargets(out); glasses.addTarget(out, block.getStateFromMeta(ore.getMetadata()).toString()); if (firstTarget) glasses.setEnergy(out, glasses.capacity); } }
+        if (!ore.isEmpty()) {
+            Block block = Block.getBlockFromItem(ore.getItem());
+            if (block != null) {
+                // Crafting configures the existing glasses and must preserve their exact EU charge,
+                // including zero or a partially charged stack.
+                glasses.addTarget(out, block.getStateFromMeta(ore.getMetadata()).toString());
+            }
+        }
         return out;
     }
     @Override public boolean canFit(int width, int height) { return width * height >= 2; }

@@ -11,7 +11,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-    @Override public void preInit(FMLPreInitializationEvent event) { ClientState.initialize(event); }
+    @Override public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
+        ClientState.initialize(event);
+    }
     @Override public void init(FMLInitializationEvent event) {}
     @Override public void postInit(FMLPostInitializationEvent event) { ClientState.gameBlockStore.populate(); }
     @Override public void onServerStopping(FMLServerStoppingEvent event) { Controller.shutdownExecutor(); }

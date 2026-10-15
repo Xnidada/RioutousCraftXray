@@ -1,20 +1,9 @@
 package com.xray;
 
-import com.xray.gui.GuiOverlay;
 import com.xray.item.ModItems;
 import com.xray.item.ModRecipes;
-import com.xray.keybinding.InputEvent;
-import com.xray.keybinding.KeyBindings;
+import com.xray.proxy.CommonProxy;
 import com.xray.reference.Reference;
-import com.xray.reference.block.BlockData;
-import com.xray.reference.block.SimpleBlockData;
-import com.xray.store.BlockStore;
-import com.xray.store.GameBlockStore;
-import com.xray.store.JsonStore;
-import com.xray.xray.Controller;
-import com.xray.xray.Events;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -22,97 +11,41 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Logger;
-
-import java.util.HashMap;
-import java.util.List;
 
 @Mod(
-		modid= Reference.MOD_ID,
-		name= Reference.MOD_NAME,
-		version=Reference.MOD_VERSION,
-		updateJSON= Reference.UPDATE_JSON,
-		dependencies = "required-after:ic2@[2.8.222,)",
-		clientSideOnly = true
+        modid = Reference.MOD_ID,
+        name = Reference.MOD_NAME,
+        version = Reference.MOD_VERSION,
+        updateJSON = Reference.UPDATE_JSON,
+        dependencies = "required-after:ic2@[2.8.222,)"
 )
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+public class XRay {
+    @SidedProxy(clientSide = "com.xray.proxy.ClientProxy", serverSide = "com.xray.proxy.CommonProxy")
+    public static CommonProxy proxy;
 
-@Mod.EventBusSubscriber(
-		modid = Reference.MOD_ID
-)
+    @Instance(Reference.MOD_ID)
+    public static XRay instance;
 
-@SideOnly(Side.CLIENT)
-public class XRay
-{
-	public XRay()
-	{
-		// Registry events are posted on MinecraftForge.EVENT_BUS in Forge 1.12.2.
-		// Register these subscribers during mod construction, before the registry phase.
-		MinecraftForge.EVENT_BUS.register(ModItems.class);
-		MinecraftForge.EVENT_BUS.register(ModRecipes.class);
-	}
+    public XRay() {
+        // Forge 1.12.2 posts registry events on MinecraftForge.EVENT_BUS.
+        MinecraftForge.EVENT_BUS.register(ModItems.class);
+        MinecraftForge.EVENT_BUS.register(ModRecipes.class);
+    }
 
-	// This contains all of the games blocks to allow us to reference them
-	// when needed. This allows us to avoid continually rebuilding
-	public static GameBlockStore gameBlockStore = new GameBlockStore();
+    @EventHandler public void preInit(FMLPreInitializationEvent event) { proxy.preInit(event); }
+    @EventHandler public void init(FMLInitializationEvent event) { proxy.init(event); }
+    @EventHandler public void postInit(FMLPostInitializationEvent event) { proxy.postInit(event); }
+    @EventHandler public void onServerStopping(FMLServerStoppingEvent event) { proxy.onServerStopping(event); }
 
-	public static Minecraft mc = Minecraft.getMinecraft();
-	public static JsonStore blockStore = new JsonStore();
-
-	public static Logger logger;
-
-	@Instance(Reference.MOD_ID)
-	public static XRay instance;
-
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
-		logger = event.getModLog();
-		logger.debug(I18n.format("xray.debug.init"));
-
-		KeyBindings.setup();
-
-		MinecraftForge.EVENT_BUS.register( new InputEvent() );
-		MinecraftForge.EVENT_BUS.register( new Events() );
-		MinecraftForge.EVENT_BUS.register( new GuiOverlay() );
-
-		MinecraftForge.EVENT_BUS.register( this );
-
-		List<SimpleBlockData> data = blockStore.read();
-		if( data.isEmpty() )
-			return;
-
-		HashMap<String, BlockData> map = BlockStore.getFromSimpleBlockList(data);
-		Controller.getBlockStore().setStore(map);
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event) {}
-
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
-		gameBlockStore.populate();
-	}
-
-	@EventHandler
-	public void onExit(FMLServerStoppingEvent event)
-	{
-		Controller.shutdownExecutor();
-	}
-
-	@SubscribeEvent
-	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
-	{
-		if (event.getModID().equals(Reference.MOD_ID))
-		{
-			ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
-		}
-	}
+    @SubscribeEvent
+    public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (Reference.MOD_ID.equals(event.getModID())) ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
+    }
 }

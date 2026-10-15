@@ -1,6 +1,6 @@
 package com.xray.gui.manage;
 
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.gui.GuiSelectionScreen;
 import com.xray.gui.utils.GuiBase;
 import com.xray.gui.utils.GuiSlider;
@@ -77,7 +77,7 @@ public class GuiEdit extends GuiBase
                 Controller.getBlockStore().getStore().remove(this.storeKey);
                 Controller.getBlockStore().getStore().put(this.storeKey, block);
 
-                XRay.blockStore.write( Controller.getBlockStore().getStore() );
+                ClientState.blockStore.write( Controller.getBlockStore().getStore() );
 
                 mc.player.closeScreen();
                 mc.displayGuiScreen( new GuiSelectionScreen() );
@@ -86,7 +86,7 @@ public class GuiEdit extends GuiBase
             case BUTTON_DELETE:
                 // Write the store back to json on delete.
                 Controller.getBlockStore().getStore().remove(this.storeKey);
-                XRay.blockStore.write( Controller.getBlockStore().getStore() );
+                ClientState.blockStore.write( Controller.getBlockStore().getStore() );
 
                 mc.player.closeScreen();
                 mc.displayGuiScreen( new GuiSelectionScreen() );

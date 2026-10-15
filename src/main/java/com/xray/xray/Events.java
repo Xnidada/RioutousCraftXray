@@ -1,6 +1,6 @@
 package com.xray.xray;
 
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -45,9 +45,9 @@ public class Events
 
 			// this is a world pos of the player
 			Render.drawOres(
-				(float)XRay.mc.player.prevPosX + ( (float)XRay.mc.player.posX - (float)XRay.mc.player.prevPosX ) * f,
-				(float)XRay.mc.player.prevPosY + ( (float)XRay.mc.player.posY - (float)XRay.mc.player.prevPosY ) * f,
-				(float)XRay.mc.player.prevPosZ + ( (float)XRay.mc.player.posZ - (float)XRay.mc.player.prevPosZ ) * f
+				(float)ClientState.mc.player.prevPosX + ( (float)ClientState.mc.player.posX - (float)ClientState.mc.player.prevPosX ) * f,
+				(float)ClientState.mc.player.prevPosY + ( (float)ClientState.mc.player.posY - (float)ClientState.mc.player.prevPosY ) * f,
+				(float)ClientState.mc.player.prevPosZ + ( (float)ClientState.mc.player.posZ - (float)ClientState.mc.player.prevPosZ ) * f
 			);
 		}
 	}

@@ -1,25 +1,28 @@
 package com.xray.item;
 
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-/** Optional IC2 integration kept reflective so the source builds without shipping IC2. */
+/** Pulls EU from IC2 electric items in the player's inventory. */
 final class IC2EnergyBridge {
     private IC2EnergyBridge() {}
     static int pullFromInventory(EntityPlayer player, int amount) {
+        if (amount <= 0 || ElectricItem.manager == null) return 0;
         try {
-            Class<?> electric = Class.forName("ic2.api.item.ElectricItem");
-            Object manager = electric.getField("manager").get(null);
-            java.lang.reflect.Method discharge = manager.getClass().getMethod("discharge", ItemStack.class, double.class, int.class, boolean.class, boolean.class, boolean.class);
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                 ItemStack source = player.inventory.getStackInSlot(i);
-                if (source.isEmpty() || source.getItem().getRegistryName() == null) continue;
-                String id = source.getItem().getRegistryName().getResourcePath().toLowerCase();
-                if (!(id.contains("battery") || id.contains("crystal") || id.contains("lapotron"))) continue;
-                double moved = ((Number) discharge.invoke(manager, source, (double) amount, 4, true, false, false)).doubleValue();
+                if (source.isEmpty() || isGlasses(source) || !(source.getItem() instanceof IElectricItem)) continue;
+                double moved = ElectricItem.manager.discharge(source, amount, 4, true, false, false);
                 if (moved > 0) return (int) Math.min(Integer.MAX_VALUE, moved);
             }
-        } catch (Throwable ignored) { }
+        } catch (RuntimeException ignored) { }
         return 0;
+    }
+
+    private static boolean isGlasses(ItemStack stack) {
+        for (ItemXrayGlasses glasses : ModItems.GLASSES) if (stack.getItem() == glasses) return true;
+        return false;
     }
 }

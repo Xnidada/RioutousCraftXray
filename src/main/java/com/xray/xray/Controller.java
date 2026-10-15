@@ -1,7 +1,7 @@
 package com.xray.xray;
 
 import com.xray.Configuration;
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.store.BlockStore;
 import com.xray.utils.WorldRegion;
 
@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import com.xray.item.ItemXrayGlasses;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -55,39 +57,39 @@ public class Controller
 
     // Public accessors
 	public static ItemXrayGlasses getGlasses() {
-		if (XRay.mc.player == null) return null;
-		ItemStack stack = XRay.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+		if (ClientState.mc.player == null) return null;
+		ItemStack stack = ClientState.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 		return stack.getItem() instanceof ItemXrayGlasses && ((ItemXrayGlasses) stack.getItem()).isUsable(stack) ? (ItemXrayGlasses) stack.getItem() : null;
 	}
 	public static ItemStack getGlassesStack() {
-		return XRay.mc.player == null ? ItemStack.EMPTY : XRay.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+		return ClientState.mc.player == null ? ItemStack.EMPTY : ClientState.mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 	}
 	public static boolean drawsTarget(String state) {
 		ItemXrayGlasses item = getGlasses();
 		if (item == null) return false;
 		return item.hasTarget(getGlassesStack(), state);
 	}
-	public static boolean drawOres() { return drawOres && XRay.mc.world != null && XRay.mc.player != null && getGlasses() != null; }
+	public static boolean drawOres() { return drawOres && ClientState.mc.world != null && ClientState.mc.player != null && getGlasses() != null; }
 	public static void toggleDrawOres()
 	{
 		if (!drawOres && getGlasses() == null) {
-			if (XRay.mc.player != null) XRay.mc.player.sendMessage(new TextComponentString("RioutousCraftXray: 请佩戴有电且已配置矿物的眼镜"));
+			if (ClientState.mc.player != null) ClientState.mc.player.sendMessage(new TextComponentString("RioutousCraftXray: 请佩戴有电且已配置矿物的眼镜"));
 			return;
 		}
 		if ( !drawOres ) // enable drawing
 		{
-			Render.ores.clear(); // first, clear the buffer
+			Render.clearOres(); // first, clear the buffer
 			executor = Executors.newSingleThreadExecutor();
 			drawOres = true; // then, enable drawing
 			requestBlockFinder( true ); // finally, force a refresh
 
 			if( !Configuration.showOverlay )
-				XRay.mc.player.sendMessage( new TextComponentString(I18n.format("xray.toggle.activated")) );
+				ClientState.mc.player.sendMessage( new TextComponentString(I18n.format("xray.toggle.activated")) );
 		}
 		else // disable drawing
 		{
 			if( !Configuration.showOverlay )
-				XRay.mc.player.sendMessage( new TextComponentString(I18n.format("xray.toggle.deactivated")) );
+				ClientState.mc.player.sendMessage( new TextComponentString(I18n.format("xray.toggle.deactivated")) );
 
 			shutdownExecutor();
 		}
@@ -121,13 +123,13 @@ public class Controller
 	private static boolean playerHasMoved()
 	{
 		return lastPlayerPos == null
-			|| lastPlayerPos.getX() != XRay.mc.player.getPosition().getX()
-			|| lastPlayerPos.getZ() != XRay.mc.player.getPosition().getZ();
+			|| lastPlayerPos.getX() != ClientState.mc.player.getPosition().getX()
+			|| lastPlayerPos.getZ() != ClientState.mc.player.getPosition().getZ();
 	}
 
 	private static void updatePlayerPosition()
 	{
-		lastPlayerPos = XRay.mc.player.getPosition();
+		lastPlayerPos = ClientState.mc.player.getPosition();
 	}
 
 	/**
@@ -149,7 +151,11 @@ public class Controller
 		{
 			updatePlayerPosition(); // since we're about to run, update the last known position
 			WorldRegion region = new WorldRegion( lastPlayerPos, getRadius() ); // the region to scan for ores
-			task = executor.submit( new RenderEnqueue(region) );
+			ItemXrayGlasses glasses = getGlasses();
+			if (glasses == null) return;
+			List<BlockSnapshot> snapshot = WorldSnapshot.capture(ClientState.mc.world, region);
+			HashMap<String, com.xray.reference.block.BlockData> blocks = new HashMap<>(getBlockStore().getStore());
+			task = executor.submit(new RenderEnqueue(snapshot, blocks, glasses, getGlassesStack().copy(), new net.minecraft.util.math.BlockPos(lastPlayerPos), glasses.radius));
 		}
 	}
 
@@ -164,6 +170,6 @@ public class Controller
 		catch (Throwable ignore) {}
 		executor = null;
 		task = null;
-		Render.ores.clear();
+		Render.clearOres();
 	}
 }

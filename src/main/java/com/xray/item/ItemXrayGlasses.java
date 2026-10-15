@@ -1,6 +1,7 @@
 package com.xray.item;
 
 import com.xray.reference.Reference;
+import ic2.api.item.IElectricItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -12,12 +13,16 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 /** Six server-authoritative tiers of powered X-Ray glasses. Energy is stored in EU. */
-public class ItemXrayGlasses extends ItemArmor {
+public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
     public final int tier, capacity, radius, slots;
-    private static final String ENERGY = "Energy";
+    /** IC2's ElectricItemManager uses this exact NBT key. */
+    private static final String ENERGY = "charge";
+    private static final String LEGACY_ENERGY = "Energy";
     private static final String TARGET = "TargetState";
 
     public ItemXrayGlasses(int tier, int capacity, int radius, int slots) {
@@ -29,10 +34,18 @@ public class ItemXrayGlasses extends ItemArmor {
         setUnlocalizedName("rioutouscraftxray.glasses_l" + tier);
     }
 
-    public int getEnergy(ItemStack stack) { return stack.hasTagCompound() ? stack.getTagCompound().getInteger(ENERGY) : 0; }
+    public int getEnergy(ItemStack stack) {
+        if (!stack.hasTagCompound()) return 0;
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag.hasKey(ENERGY)) return (int) Math.max(0, Math.min(capacity, Math.round(tag.getDouble(ENERGY))));
+        // Migrate stacks made by the old implementation once they are read.
+        return (int) Math.max(0, Math.min(capacity, tag.getInteger(LEGACY_ENERGY)));
+    }
     public void setEnergy(ItemStack stack, int value) {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound().setInteger(ENERGY, Math.max(0, Math.min(capacity, value)));
+        NBTTagCompound tag = stack.getTagCompound();
+        tag.setDouble(ENERGY, Math.max(0, Math.min(capacity, value)));
+        tag.removeTag(LEGACY_ENERGY);
     }
     public String getTarget(ItemStack stack) { return stack.hasTagCompound() ? stack.getTagCompound().getString(TARGET) : ""; }
     public void setTarget(ItemStack stack, String state) {
@@ -60,9 +73,24 @@ public class ItemXrayGlasses extends ItemArmor {
     public boolean consume(ItemStack stack, int eu) { int e = getEnergy(stack); if (e < eu) return false; setEnergy(stack, e - eu); return true; }
     public boolean isUsable(ItemStack stack) { return getEnergy(stack) >= 100 && hasConfiguredTargets(stack); }
 
+    @Override public boolean canProvideEnergy(ItemStack stack) { return false; }
+    @Override public double getMaxCharge(ItemStack stack) { return capacity; }
+    @Override public int getTier(ItemStack stack) { return tier <= 3 ? 3 : 4; }
+    @Override public double getTransferLimit(ItemStack stack) {
+        switch (tier) {
+            case 1: return 512;
+            case 2: return 1024;
+            case 3: return 2048;
+            case 4: return 4096;
+            case 5: return 8192;
+            default: return 16384;
+        }
+    }
+
     @Override public boolean showDurabilityBar(ItemStack stack) { return true; }
     @Override public double getDurabilityForDisplay(ItemStack stack) { return 1.0D - (double) getEnergy(stack) / capacity; }
     @Override public int getRGBDurabilityForDisplay(ItemStack stack) { return 0x20D8FF; }
+    @SideOnly(Side.CLIENT)
     @Override public void addInformation(ItemStack stack, net.minecraft.world.World world, List<String> tooltip, ITooltipFlag flag) {
         tooltip.add(TextFormatting.AQUA + "EU: " + getEnergy(stack) + " / " + capacity);
         tooltip.add(TextFormatting.GRAY + "L" + tier + "  " + radius + "x" + radius + "  " + slots + " targets");
@@ -70,7 +98,10 @@ public class ItemXrayGlasses extends ItemArmor {
 
     @Override public void onArmorTick(net.minecraft.world.World world, EntityPlayer player, ItemStack stack) {
         if (!world.isRemote && player.ticksExisted % 20 == 0) {
-            if (getEnergy(stack) < capacity) setEnergy(stack, getEnergy(stack) + IC2EnergyBridge.pullFromInventory(player, Math.min(10000, capacity - getEnergy(stack))));
+            int energy = getEnergy(stack);
+            if (energy < capacity) {
+                setEnergy(stack, energy + IC2EnergyBridge.pullFromInventory(player, Math.min(10000, capacity - energy)));
+            }
             if (isUsable(stack)) consume(stack, 100);
         }
     }

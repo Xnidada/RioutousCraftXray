@@ -1,6 +1,6 @@
 package com.xray.gui;
 
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.gui.utils.GuiBase;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -47,8 +47,8 @@ public class GuiHelp extends GuiBase {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 1) {
-            XRay.mc.player.closeScreen();
-            XRay.mc.displayGuiScreen(new GuiSelectionScreen());
+            ClientState.mc.player.closeScreen();
+            ClientState.mc.displayGuiScreen(new GuiSelectionScreen());
         }
     }
 

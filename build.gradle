@@ -43,8 +43,19 @@ minecraft {
     }
 }
 
+repositories {
+    // The local repository is useful when building beside the IC2 development jar.
+    // The public IC2 repository keeps normal checkouts buildable without copying it.
+    if (project.hasProperty('localMaven')) {
+        maven { url = uri(project.property('localMaven')) }
+    }
+    maven { url = uri('local-maven') }
+    maven { url = 'https://maven2.ic2.player.to/' }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compile 'net.industrial-craft:industrialcraft-2:2.8.222-ex112:dev'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

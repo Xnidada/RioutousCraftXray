@@ -5,7 +5,7 @@
   "description": "Powered, tiered X-Ray glasses for IndustrialCraft 2.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/AdvancedXRay/RioutousCraftXray",
+  "url": "https://github.com/Xnidada/RioutousCraftXray",
   "updateJSON": "",
   "authorList": ["MiKeY", "mcd1992"],
   "credits": "A Special thanks to uaBArt for the 1.7.10 -> 1.8.9 update :)",

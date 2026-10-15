@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.reference.Reference;
 import com.xray.reference.block.BlockData;
 import com.xray.reference.block.SimpleBlockData;
@@ -20,7 +20,7 @@ public class JsonStore
 {
     private static final String FILE = "block_store.json";
     private static final String FILE_SPECIFIC = "block_store_1_12.json";
-    private static final String CONFIG_DIR = XRay.mc.mcDataDir + "/config/";
+    private static final String CONFIG_DIR = ClientState.mc.mcDataDir + "/config/";
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -59,7 +59,7 @@ public class JsonStore
             gson.toJson(simpleBlockData, writer);
         }
         catch (IOException e) {
-            XRay.logger.log(Level.ERROR, "Failed to write json data to " + FILE);
+            ClientState.logger.log(Level.ERROR, "Failed to write json data to " + FILE);
         }
     }
 
@@ -82,14 +82,14 @@ public class JsonStore
                 this.write(simpleBlockData);
                 boolean delete = jsonFileOld.delete();
                 if (delete) {
-                    XRay.logger.debug("Deleted old config file in preference for versioned file");
+                    ClientState.logger.debug("Deleted old config file in preference for versioned file");
                 }
                 return simpleBlockData;
             } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
                 boolean delete = jsonFileOld.delete();
                 if (delete) {
-                    XRay.logger.debug("Deleted invalid config");
+                    ClientState.logger.debug("Deleted invalid config");
                 }
             }
 

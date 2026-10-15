@@ -2,7 +2,7 @@ package com.xray.gui.manage;
 
 import com.xray.gui.utils.GuiBase;
 import com.xray.gui.GuiSelectionScreen;
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.reference.block.BlockItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -26,7 +26,7 @@ public class GuiBlockListScrollable extends GuiBase {
 
     public GuiBlockListScrollable() {
         super(false);
-        this.blocks = XRay.gameBlockStore.getStore();
+        this.blocks = ClientState.gameBlockStore.getStore();
     }
 
     boolean blockSelected(int index) {
@@ -89,7 +89,7 @@ public class GuiBlockListScrollable extends GuiBase {
     private void reloadBlocks() {
         blocks = new ArrayList<>();
         ArrayList<BlockItem> tmpBlocks = new ArrayList<>();
-        for( BlockItem block : XRay.gameBlockStore.getStore() ) {
+        for( BlockItem block : ClientState.gameBlockStore.getStore() ) {
             if( block.getItemStack().getDisplayName().toLowerCase().contains(search.getText().toLowerCase()) )
                 tmpBlocks.add(block);
         }

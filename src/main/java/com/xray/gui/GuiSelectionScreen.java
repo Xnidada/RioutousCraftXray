@@ -1,6 +1,6 @@
 package com.xray.gui;
 
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.gui.manage.GuiAddBlock;
 import com.xray.gui.manage.GuiBlockListScrollable;
 import com.xray.gui.utils.GuiBase;
@@ -193,14 +193,14 @@ public class GuiSelectionScreen extends GuiBase
 		this.scrollList.drawScreen( x, y, f );
 
 		if( !search.isFocused() && search.getText().equals(""))
-			XRay.mc.fontRenderer.drawStringWithShadow(I18n.format("xray.single.search"), (float) width / 2 - 130, (float) height / 2 - 101, Color.GRAY.getRGB());
+			ClientState.mc.fontRenderer.drawStringWithShadow(I18n.format("xray.single.search"), (float) width / 2 - 130, (float) height / 2 - 101, Color.GRAY.getRGB());
 	}
 
 	@Override
 	public void onGuiClosed()
 	{
 		ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
-		XRay.blockStore.write( Controller.getBlockStore().getStore() );
+		ClientState.blockStore.write( Controller.getBlockStore().getStore() );
 
 		Controller.requestBlockFinder( true );
 	}

@@ -11,19 +11,20 @@ public class WorldRegion {
 	public int minChunkX, minChunkY, minChunkZ, maxChunkX, maxChunkY, maxChunkZ;
 
 	/**
-	 * Constructs a world region from a player location and a radius.
+	 * Constructs an exact-width world region from a player location.
 	 * Vertical extend is 92 blocks down and 32 blocks up
 	 * @param pos a world position
-	 * @param radius a block radius
+	 * @param radius the horizontal width/depth in blocks
 	 */
 	public WorldRegion(Vec3i pos, int radius)
 	{
-		minX = pos.getX() - radius;
-		maxX = pos.getX() + radius;
+		int lower = radius / 2;
+		minX = pos.getX() - lower;
+		maxX = minX + radius - 1;
 		minY = Math.max(0, pos.getY() - 92);
 		maxY = Math.min(255, pos.getY() + 32);
-		minZ = pos.getZ() - radius;
-		maxZ = pos.getZ() + radius;
+		minZ = pos.getZ() - lower;
+		maxZ = minZ + radius - 1;
 		minChunkX = minX >> 4;
 		maxChunkX = maxX >> 4;
 		minChunkY = minY >> 4;

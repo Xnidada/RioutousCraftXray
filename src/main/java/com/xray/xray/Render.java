@@ -16,6 +16,25 @@ public class Render
 {
     public static List<BlockInfo> ores = Collections.synchronizedList( new ArrayList<>() ); // this is accessed by threads
 
+	public static void clearOres() {
+		synchronized (ores) { ores.clear(); }
+	}
+
+	public static void replaceOres(List<BlockInfo> blocks) {
+		synchronized (ores) {
+			ores.clear();
+			ores.addAll(blocks);
+		}
+	}
+
+	public static void addOre(BlockInfo block) {
+		synchronized (ores) { ores.add(block); }
+	}
+
+	public static void removeOre(BlockInfo block) {
+		synchronized (ores) { ores.remove(block); }
+	}
+
     private static final int GL_FRONT_AND_BACK = 1032;
     private static final int GL_LINE = 6913;
     private static final int GL_FILL = 6914;
@@ -29,11 +48,13 @@ public class Render
 
         buffer.setTranslation( -playerX, -playerY, -playerZ );
 
-        ores.forEach( b -> {
-            buffer.begin( GL_LINES, DefaultVertexFormats.POSITION_COLOR );
-            Utils.renderBlockBounding( buffer, b, (int) b.alpha );
-            tessellator.draw();
-        } );
+		synchronized (ores) {
+			for (BlockInfo b : ores) {
+				buffer.begin( GL_LINES, DefaultVertexFormats.POSITION_COLOR );
+				Utils.renderBlockBounding( buffer, b, (int) b.alpha );
+				tessellator.draw();
+			}
+		}
 
         buffer.setTranslation( 0, 0, 0 );
 

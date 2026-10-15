@@ -1,6 +1,6 @@
 package com.xray.gui.manage;
 
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.gui.GuiSelectionScreen;
 import com.xray.gui.utils.GuiBase;
 import com.xray.gui.utils.GuiSlider;
@@ -95,7 +95,7 @@ public class GuiAddBlock extends GuiBase {
 					)
 				);
 
-				XRay.blockStore.write( Controller.getBlockStore().getStore() );
+				ClientState.blockStore.write( Controller.getBlockStore().getStore() );
 
 				mc.displayGuiScreen( new GuiSelectionScreen() );
 

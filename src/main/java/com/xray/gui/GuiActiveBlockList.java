@@ -1,6 +1,6 @@
 package com.xray.gui;
 
-import com.xray.XRay;
+import com.xray.client.ClientState;
 import com.xray.gui.manage.GuiEdit;
 import com.xray.gui.utils.GuiBase;
 import com.xray.reference.Reference;
@@ -27,7 +27,7 @@ public class GuiActiveBlockList extends GuiScrollingList {
     private ArrayList<BlockData> itemList;
 
     GuiActiveBlockList(GuiSelectionScreen parent, int x, int y, ArrayList<BlockData> itemList) {
-        super(XRay.mc, 204, 250, y, parent.height / 2 + 100, x, HEIGHT, parent.width, parent.height);
+        super(ClientState.mc, 204, 250, y, parent.height / 2 + 100, x, HEIGHT, parent.width, parent.height);
 
         this.parent = parent;
         this.itemList = itemList;
@@ -44,14 +44,14 @@ public class GuiActiveBlockList extends GuiScrollingList {
         BlockData data = this.itemList.get(index);
         if( GuiEdit.isShiftKeyDown() ) {
             Controller.getBlockStore().toggleDrawing(data.getEntryKey());
-            XRay.blockStore.write(Controller.getBlockStore().getStore());
+            ClientState.blockStore.write(Controller.getBlockStore().getStore());
 
             return;
         }
 
         if( doubleClick ) {
-            XRay.mc.player.closeScreen();
-            XRay.mc.displayGuiScreen( new GuiEdit(data.getEntryKey(), data) );
+            ClientState.mc.player.closeScreen();
+            ClientState.mc.displayGuiScreen( new GuiEdit(data.getEntryKey(), data) );
         }
     }
 

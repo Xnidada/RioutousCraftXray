@@ -1,7 +1,7 @@
 package com.xray;
 
 import com.xray.item.ModItems;
-import com.xray.item.ModRecipes;
+import com.xray.injector.ModBlocks;
 import com.xray.proxy.CommonProxy;
 import com.xray.reference.Reference;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +36,7 @@ public class XRay {
     public XRay() {
         // Forge 1.12.2 posts registry events on MinecraftForge.EVENT_BUS.
         MinecraftForge.EVENT_BUS.register(ModItems.class);
-        MinecraftForge.EVENT_BUS.register(ModRecipes.class);
+        MinecraftForge.EVENT_BUS.register(ModBlocks.class);
     }
 
     @EventHandler public void preInit(FMLPreInitializationEvent event) { proxy.preInit(event); }

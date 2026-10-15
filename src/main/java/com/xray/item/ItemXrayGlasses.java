@@ -17,6 +17,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
+import java.util.ArrayList;
 
 /** Six server-authoritative tiers of powered X-Ray glasses. Energy is stored in EU. */
 public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
@@ -54,17 +55,44 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
         stack.getTagCompound().setString(TARGET, state);
     }
     public boolean hasTarget(ItemStack stack, String state) {
-        if (!stack.hasTagCompound()) return false;
-        NBTTagList list = stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING);
-        for (int i = 0; i < Math.min(slots, list.tagCount()); i++) if (state.equals(list.getStringTagAt(i))) return true;
-        return list.tagCount() == 0 && state.equals(getTarget(stack));
+        for (String target : getTargets(stack)) if (state.equals(target)) return true;
+        return false;
     }
     public boolean hasConfiguredTargets(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING).tagCount() > 0;
+        return !getTargets(stack).isEmpty();
+    }
+    public List<String> getTargets(ItemStack stack) {
+        List<String> targets = new ArrayList<>();
+        if (!stack.hasTagCompound()) return targets;
+        NBTTagList list = stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING);
+        for (int i = 0; i < Math.min(slots, list.tagCount()); i++) targets.add(list.getStringTagAt(i));
+        if (targets.isEmpty() && !getTarget(stack).isEmpty()) targets.add(getTarget(stack));
+        return targets;
+    }
+    public int getTargetCount(ItemStack stack) { return getTargets(stack).size(); }
+    public boolean removeTarget(ItemStack stack, int index) {
+        List<String> targets = getTargets(stack);
+        if (index < 0 || index >= targets.size()) return false;
+        targets.remove(index);
+        if (!stack.hasTagCompound()) return true;
+        NBTTagCompound tag = stack.getTagCompound();
+        if (targets.isEmpty()) {
+            tag.removeTag("Targets");
+            tag.removeTag(TARGET);
+        } else {
+            NBTTagList list = new NBTTagList();
+            for (String target : targets) list.appendTag(new net.minecraft.nbt.NBTTagString(target));
+            tag.setTag("Targets", list);
+            tag.setString(TARGET, targets.get(targets.size() - 1));
+        }
+        return true;
     }
     public void addTarget(ItemStack stack, String state) {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
         NBTTagList list = stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING);
+        if (list.tagCount() == 0 && !getTarget(stack).isEmpty()) {
+            list.appendTag(new net.minecraft.nbt.NBTTagString(getTarget(stack)));
+        }
         for (int i = 0; i < list.tagCount(); i++) if (state.equals(list.getStringTagAt(i))) return;
         if (list.tagCount() >= slots) list.removeTag(0);
         list.appendTag(new net.minecraft.nbt.NBTTagString(state));

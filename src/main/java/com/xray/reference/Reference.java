@@ -12,5 +12,6 @@ public class Reference {
     public static final String PREFIX_MOD = MOD_ID+":";
 
     public static final String PREFIX_GUI = PREFIX_MOD+"textures/gui/";
+    public static final int GUI_INJECTOR = 1;
 
 }

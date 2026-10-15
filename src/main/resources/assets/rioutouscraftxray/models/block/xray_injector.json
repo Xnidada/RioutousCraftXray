@@ -1,4 +1,12 @@
 {
-  "parent": "block/cube_all",
-  "textures": { "all": "rioutouscraftxray:blocks/xray_injector" }
+  "parent": "block/cube",
+  "textures": {
+    "down": "rioutouscraftxray:blocks/xray_injector",
+    "up": "rioutouscraftxray:blocks/xray_injector",
+    "north": "rioutouscraftxray:blocks/xray_injector",
+    "south": "rioutouscraftxray:blocks/xray_injector",
+    "west": "rioutouscraftxray:blocks/xray_injector",
+    "east": "rioutouscraftxray:blocks/xray_injector",
+    "particle": "rioutouscraftxray:blocks/xray_injector"
+  }
 }

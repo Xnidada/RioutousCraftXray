@@ -12,5 +12,5 @@ gui.rioutouscraftxray.glasses=Glasses
 gui.rioutouscraftxray.ore=ORE
 gui.rioutouscraftxray.energy=Energy: %s / %s EU
 gui.rioutouscraftxray.targets=Injected ORE
-gui.rioutouscraftxray.inject=Inject ORE
-gui.rioutouscraftxray.clear=Clear ORE
+gui.rioutouscraftxray.inject=Inject
+gui.rioutouscraftxray.clear=Clear

@@ -27,8 +27,8 @@ public class GuiXrayInjector extends GuiContainer {
 
     @Override public void initGui() {
         super.initGui();
-        buttonList.add(new GuiButton(0, guiLeft + 76, guiTop + 20, 48, 18, I18n.format("gui.rioutouscraftxray.inject")));
-        buttonList.add(new GuiButton(1, guiLeft + 76, guiTop + 40, 48, 18, I18n.format("gui.rioutouscraftxray.clear")));
+        buttonList.add(new GuiButton(0, guiLeft + 57, guiTop + 21, 29, 16, I18n.format("gui.rioutouscraftxray.inject")));
+        buttonList.add(new GuiButton(1, guiLeft + 57, guiTop + 40, 29, 16, I18n.format("gui.rioutouscraftxray.clear")));
         rebuildTargetButtons();
     }
 
@@ -41,10 +41,8 @@ public class GuiXrayInjector extends GuiContainer {
             String state = targets.get(i);
             state = shortTarget(state);
             String prefix = container.tile.getSelectedTarget() == i ? ">" : "";
-            int column = i / 4;
-            int row = i % 4;
-            buttonList.add(new GuiButton(100 + i, guiLeft + 106 + column * 41, guiTop + 18 + row * 18,
-                    39, 16, prefix + (i + 1) + ":" + state));
+            buttonList.add(new GuiButton(100 + i, guiLeft + 86, guiTop + 19 + i * 9,
+                    47, 10, prefix + (i + 1) + ":" + state));
         }
     }
 
@@ -72,10 +70,10 @@ public class GuiXrayInjector extends GuiContainer {
         String title = I18n.format("container.rioutouscraftxray.injector");
         fontRenderer.drawString(title, 97 - fontRenderer.getStringWidth(title) / 2, 7, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.energy", (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 50, 22, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 17, 50, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 45, 50, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets"), 106, 8, 0xD0D0D0);
-        if (container.tile.getTargets().isEmpty()) fontRenderer.drawString("-", 150, 8, 0x808080);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 17, 38, 0xD0D0D0);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 36, 38, 0xD0D0D0);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets"), 86, 8, 0xD0D0D0);
+        if (container.tile.getTargets().isEmpty()) fontRenderer.drawString("-", 132, 8, 0x808080);
     }
 
     @Override protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {

@@ -45,20 +45,23 @@ public class Render
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         Profile.BLOCKS.apply(); // Sets GL state for block drawing
+        try {
+            buffer.setTranslation( -playerX, -playerY, -playerZ );
 
-        buffer.setTranslation( -playerX, -playerY, -playerZ );
-
-		synchronized (ores) {
-			for (BlockInfo b : ores) {
-				buffer.begin( GL_LINES, DefaultVertexFormats.POSITION_COLOR );
-				Utils.renderBlockBounding( buffer, b, (int) b.alpha );
-				tessellator.draw();
-			}
-		}
-
-        buffer.setTranslation( 0, 0, 0 );
-
-        Profile.BLOCKS.clean();
+		    synchronized (ores) {
+			    for (BlockInfo b : ores) {
+				    buffer.begin( GL_LINES, DefaultVertexFormats.POSITION_COLOR );
+				    Utils.renderBlockBounding( buffer, b, (int) b.alpha );
+				    tessellator.draw();
+			        }
+		    }
+        } finally {
+            buffer.setTranslation( 0, 0, 0 );
+            Profile.BLOCKS.clean();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableLighting();
+            GlStateManager.enableCull();
+        }
 	}
 
     /**

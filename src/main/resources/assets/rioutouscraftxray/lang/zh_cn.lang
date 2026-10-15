@@ -12,5 +12,5 @@ gui.rioutouscraftxray.glasses=透视眼镜
 gui.rioutouscraftxray.ore=ORE矿物
 gui.rioutouscraftxray.energy=机器电量：%s / %s EU
 gui.rioutouscraftxray.targets=已注入的矿物
-gui.rioutouscraftxray.inject=注入ORE
-gui.rioutouscraftxray.clear=清除ORE
+gui.rioutouscraftxray.inject=注入
+gui.rioutouscraftxray.clear=清除

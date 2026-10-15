@@ -1,0 +1,8 @@
+item.rioutouscraftxray.glasses_l1.name=RioutousCraft透视眼镜 L1
+item.rioutouscraftxray.glasses_l2.name=RioutousCraft透视眼镜 L2
+item.rioutouscraftxray.glasses_l3.name=RioutousCraft透视眼镜 L3
+item.rioutouscraftxray.glasses_l4.name=RioutousCraft透视眼镜 L4
+item.rioutouscraftxray.glasses_l5.name=RioutousCraft透视眼镜 L5
+item.rioutouscraftxray.glasses_l6.name=RioutousCraft透视眼镜 L6
+item.rioutouscraftxray.energy=电量：%s / %s EU
+item.rioutouscraftxray.stats=L%s  范围：%sx%s  同时透视：%s 个方块

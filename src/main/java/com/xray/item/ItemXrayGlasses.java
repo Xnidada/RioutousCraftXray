@@ -7,6 +7,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
@@ -92,8 +93,8 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
     @Override public int getRGBDurabilityForDisplay(ItemStack stack) { return 0x20D8FF; }
     @SideOnly(Side.CLIENT)
     @Override public void addInformation(ItemStack stack, net.minecraft.world.World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextFormatting.AQUA + "EU: " + getEnergy(stack) + " / " + capacity);
-        tooltip.add(TextFormatting.GRAY + "L" + tier + "  " + radius + "x" + radius + "  " + slots + " targets");
+        tooltip.add(TextFormatting.AQUA + I18n.format("item.rioutouscraftxray.energy", getEnergy(stack), capacity));
+        tooltip.add(TextFormatting.GRAY + I18n.format("item.rioutouscraftxray.stats", tier, radius, radius, slots));
     }
 
     @Override public void onArmorTick(net.minecraft.world.World world, EntityPlayer player, ItemStack stack) {

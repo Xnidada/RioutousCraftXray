@@ -11,6 +11,8 @@ import net.minecraftforge.fml.relauncher.Side;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Side.CLIENT)
 public final class ClientItemModels {
     @SubscribeEvent public static void register(ModelRegistryEvent event) {
+        ModelLoader.setCustomModelResourceLocation(ModItems.XRAY_INJECTOR, 0,
+                new ModelResourceLocation(ModItems.XRAY_INJECTOR.getRegistryName(), "inventory"));
         for (ItemXrayGlasses glasses : ModItems.GLASSES) ModelLoader.setCustomModelResourceLocation(glasses, 0, new ModelResourceLocation(glasses.getRegistryName(), "inventory"));
     }
     private ClientItemModels() {}

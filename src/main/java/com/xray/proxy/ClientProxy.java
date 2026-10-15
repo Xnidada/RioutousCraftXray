@@ -18,7 +18,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         ClientState.initialize(event);
     }
-    @Override public void init(FMLInitializationEvent event) {}
+    @Override public void init(FMLInitializationEvent event) { super.init(event); }
     @Override public void postInit(FMLPostInitializationEvent event) {}
     @Override public void onServerStopping(FMLServerStoppingEvent event) { Controller.shutdownExecutor(); }
     @Override public Object getClientGuiElement(int id, net.minecraft.entity.player.EntityPlayer player,

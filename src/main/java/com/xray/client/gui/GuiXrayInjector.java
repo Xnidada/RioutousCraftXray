@@ -6,11 +6,13 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 import java.util.List;
 
 public class GuiXrayInjector extends GuiContainer {
+    private static final ResourceLocation BACKGROUND = new ResourceLocation("rioutouscraftxray", "textures/gui/injector.png");
     private final ContainerXrayInjector container;
     private int targetCount = -1;
     private int selectedTarget = -1;
@@ -64,9 +66,7 @@ public class GuiXrayInjector extends GuiContainer {
 
     @Override protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         drawDefaultBackground();
-        drawRect(guiLeft, guiTop, guiLeft + xSize, guiTop + ySize, 0xff303030);
-        drawRect(guiLeft + 40, guiTop + 32, guiLeft + 64, guiTop + 56, 0xff101010);
-        drawRect(guiLeft + 76, guiTop + 32, guiLeft + 100, guiTop + 56, 0xff101010);
-        drawRect(guiLeft + 7, guiTop + 98, guiLeft + 169, guiTop + 173, 0xff202020);
+        mc.getTextureManager().bindTexture(BACKGROUND);
+        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 }

@@ -80,7 +80,21 @@ public class GuiXrayInjector extends GuiContainer {
         drawDefaultBackground();
         mc.getTextureManager().bindTexture(BACKGROUND);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+        drawInventorySlotFrames();
         int height = MathHelper.ceil(14.0F * (float) container.tile.getEnergy() / TileXrayInjector.MAX_ENERGY);
         if (height > 0) drawRect(guiLeft + 19, guiTop + 38 - height, guiLeft + 33, guiTop + 38, 0xFF20D8FF);
+    }
+
+    private void drawInventorySlotFrames() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 9; col++) drawSlotFrame(17 + col * 18, 76 + row * 18);
+        }
+        for (int col = 0; col < 9; col++) drawSlotFrame(17 + col * 18, 130);
+    }
+
+    private void drawSlotFrame(int x, int y) {
+        drawRect(guiLeft + x - 1, guiTop + y - 1, guiLeft + x + 17, guiTop + y + 17, 0xFF111315);
+        drawRect(guiLeft + x, guiTop + y, guiLeft + x + 16, guiTop + y + 16, 0xFF4B5055);
+        drawRect(guiLeft + x + 1, guiTop + y + 1, guiLeft + x + 15, guiTop + y + 15, 0xFF292D31);
     }
 }

@@ -45,6 +45,9 @@ public class ItemXrayGlasses extends ItemArmor {
         for (int i = 0; i < Math.min(slots, list.tagCount()); i++) if (state.equals(list.getStringTagAt(i))) return true;
         return list.tagCount() == 0 && state.equals(getTarget(stack));
     }
+    public boolean hasConfiguredTargets(ItemStack stack) {
+        return stack.hasTagCompound() && stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING).tagCount() > 0;
+    }
     public void addTarget(ItemStack stack, String state) {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
         NBTTagList list = stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING);
@@ -55,7 +58,7 @@ public class ItemXrayGlasses extends ItemArmor {
         stack.getTagCompound().setString(TARGET, state);
     }
     public boolean consume(ItemStack stack, int eu) { int e = getEnergy(stack); if (e < eu) return false; setEnergy(stack, e - eu); return true; }
-    public boolean isUsable(ItemStack stack) { return getEnergy(stack) >= 100 && stack.hasTagCompound() && stack.getTagCompound().getTagList("Targets", Constants.NBT.TAG_STRING).tagCount() > 0; }
+    public boolean isUsable(ItemStack stack) { return getEnergy(stack) >= 100 && hasConfiguredTargets(stack); }
 
     @Override public boolean showDurabilityBar(ItemStack stack) { return true; }
     @Override public double getDurabilityForDisplay(ItemStack stack) { return 1.0D - (double) getEnergy(stack) / capacity; }

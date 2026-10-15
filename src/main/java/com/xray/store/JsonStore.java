@@ -78,11 +78,13 @@ public class JsonStore
             try (BufferedReader reader = new BufferedReader(new FileReader(jsonFileOld))) {
                 // If parsing worked, write it to the new file and delete the old one
                 List<SimpleBlockData> simpleBlockData = gson.fromJson(reader, type);
+                if (simpleBlockData == null) simpleBlockData = new ArrayList<>();
                 this.write(simpleBlockData);
                 boolean delete = jsonFileOld.delete();
                 if (delete) {
                     XRay.logger.debug("Deleted old config file in preference for versioned file");
                 }
+                return simpleBlockData;
             } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
                 boolean delete = jsonFileOld.delete();
@@ -97,7 +99,8 @@ public class JsonStore
             // Read the new one :D
             Type type = new TypeToken<List<SimpleBlockData>>() {}.getType();
             try (BufferedReader reader = new BufferedReader(new FileReader(jsonFileNew))) {
-                return gson.fromJson(reader, type);
+                List<SimpleBlockData> simpleBlockData = gson.fromJson(reader, type);
+                return simpleBlockData == null ? new ArrayList<>() : simpleBlockData;
             } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
             }

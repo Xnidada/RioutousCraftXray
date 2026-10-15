@@ -141,6 +141,10 @@ public class Controller
 	 */
 	public static synchronized void requestBlockFinder( boolean force )
 	{
+		if (!drawOres()) {
+			if (drawOres) shutdownExecutor();
+			return;
+		}
 		if ( drawOres() && (task == null || task.isDone()) && (force || playerHasMoved()) ) // world/player check done by drawOres()
 		{
 			updatePlayerPosition(); // since we're about to run, update the last known position
@@ -158,5 +162,8 @@ public class Controller
 		drawOres = false;
 		try { executor.shutdownNow(); }
 		catch (Throwable ignore) {}
+		executor = null;
+		task = null;
+		Render.ores.clear();
 	}
 }

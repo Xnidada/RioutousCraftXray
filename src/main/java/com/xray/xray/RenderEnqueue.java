@@ -6,6 +6,8 @@ import com.xray.reference.block.BlockData;
 import com.xray.reference.block.BlockInfo;
 import com.xray.utils.WorldRegion;
 import com.xray.utils.OutlineColor;
+import com.xray.item.ItemXrayGlasses;
+import net.minecraft.item.ItemStack;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
@@ -35,8 +37,10 @@ public class RenderEnqueue implements Runnable
 	 */
 	private void blockFinder() {
         HashMap<String, BlockData> blocks = Controller.getBlockStore().getStore();
+        ItemXrayGlasses glasses = Controller.getGlasses();
+        ItemStack glassesStack = Controller.getGlassesStack();
 
-		if ( blocks.isEmpty() ) {
+		if ( blocks.isEmpty() && glasses == null ) {
 		    if( !Render.ores.isEmpty() )
 		        Render.ores.clear();
             return; // no need to scan the region if there's nothing to find
@@ -98,14 +102,14 @@ public class RenderEnqueue implements Runnable
 
 								defaultState = currentState.getBlock().getDefaultState();
 
-								boolean poweredTarget = Controller.drawsTarget(currentState.toString()) || Controller.drawsTarget(defaultState.toString());
+								boolean poweredTarget = glasses != null && (glasses.hasTarget(glassesStack, currentState.toString()) || glasses.hasTarget(glassesStack, defaultState.toString()));
 								boolean defaultExists = poweredTarget || blocks.containsKey(defaultState.toString());
 								boolean currentExists = poweredTarget || blocks.containsKey(currentState.toString());
 								if( !defaultExists && !currentExists )
 									continue;
 
 								blockData = blocks.get(currentExists ? currentState.toString() : defaultState.toString());
-				if (poweredTarget && blockData == null) blockData = new BlockData(currentState.toString(), currentState.getBlock().getLocalizedName(), Block.getStateId(currentState), new OutlineColor(255,255,255), new net.minecraft.item.ItemStack(currentState.getBlock()), true, 0);
+								if (poweredTarget && blockData == null) blockData = targetData(currentState);
 								if( blockData == null || !blockData.isDrawing() ) // fail safe
 									continue;
 
@@ -135,13 +139,15 @@ public class RenderEnqueue implements Runnable
 	 */
 	public static void checkBlock( BlockPos pos, IBlockState state, boolean add )
 	{
-		if ( !Controller.drawOres() || Controller.getBlockStore().getStore().isEmpty() )
+		if ( !Controller.drawOres() )
 		    return; // just pass
 
 		String defaultState = state.getBlock().getDefaultState().toString();
+		boolean poweredTarget = Controller.drawsTarget(state.toString()) || Controller.drawsTarget(defaultState);
+		if (!poweredTarget && Controller.getBlockStore().getStore().isEmpty()) return;
 
 		// Let's see if the block to check is an ore we monitor
-		if ( Controller.getBlockStore().getStore().containsKey(defaultState) ) // it's a block we are monitoring
+		if ( poweredTarget || Controller.getBlockStore().getStore().containsKey(defaultState) ) // it's a block we are monitoring
 		{
 		    if( !add )
 		    {
@@ -153,7 +159,10 @@ public class RenderEnqueue implements Runnable
             if( Controller.getBlockStore().getStore().containsKey(defaultState) )
                 data = Controller.getBlockStore().getStore().get(defaultState);
 
-            if( data == null )
+			if( data == null && poweredTarget )
+				data = targetData(state);
+
+			if( data == null )
             	return;
 
 			double alpha = !Configuration.shouldFade ? 255 : Math.max(0, ((Controller.getRadius() - XRay.mc.player.getDistance(pos.getX(), pos.getY(), pos.getZ())) / Controller.getRadius() ) * 255);
@@ -161,5 +170,9 @@ public class RenderEnqueue implements Runnable
             // the block was added to the world, let's add it to the drawing buffer
             Render.ores.add( new BlockInfo(pos, data.getColor().getColor(), alpha) );
 		}
+	}
+
+	private static BlockData targetData(IBlockState state) {
+		return new BlockData(state.toString(), state.getBlock().getLocalizedName(), Block.getStateId(state), new OutlineColor(255,255,255), new ItemStack(state.getBlock()), true, 0);
 	}
 }

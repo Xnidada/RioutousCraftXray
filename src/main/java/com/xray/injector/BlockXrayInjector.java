@@ -6,6 +6,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
@@ -27,6 +28,10 @@ public class BlockXrayInjector extends BlockContainer {
     }
 
     @Override public TileEntity createNewTileEntity(World world, int metadata) { return new TileXrayInjector(); }
+
+    @Override public boolean isOpaqueCube(IBlockState state) { return true; }
+    @Override public boolean isFullCube(IBlockState state) { return true; }
+    @Override public BlockRenderLayer getBlockLayer() { return BlockRenderLayer.SOLID; }
 
     @Override public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
                                                EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {

@@ -9,8 +9,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyEmitter;
+import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.List;
@@ -18,13 +22,36 @@ import java.util.List;
 /** Server-authoritative ORE injector and IC2 EU sink. */
 public class TileXrayInjector extends TileEntity implements IInventory, IEnergySink {
     public static final int ACTION_COST = 10000;
-    private static final int MAX_ENERGY = 100000;
+    public static final int MAX_ENERGY = 100000;
 
     private final InventoryBasic inventory = new InventoryBasic("container.rioutouscraftxray.injector", false, 2);
     private double energy;
     private int selectedTarget;
+    private boolean addedToEnergyNet;
 
     public TileXrayInjector() {}
+
+    @Override public void onLoad() {
+        super.onLoad();
+        if (!world.isRemote) addedToEnergyNet = !MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) this));
+    }
+
+    @Override public void onChunkUnload() {
+        unloadFromEnergyNet();
+        super.onChunkUnload();
+    }
+
+    @Override public void invalidate() {
+        unloadFromEnergyNet();
+        super.invalidate();
+    }
+
+    private void unloadFromEnergyNet() {
+        if (addedToEnergyNet) {
+            MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) this));
+            addedToEnergyNet = false;
+        }
+    }
 
     public double getEnergy() { return energy; }
     public int getSelectedTarget() { return selectedTarget; }

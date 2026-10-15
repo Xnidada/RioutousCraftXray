@@ -1,4 +1,4 @@
 {
   "parent": "block/cube_all",
-  "textures": { "all": "minecraft:blocks/iron_block" }
+  "textures": { "all": "rioutouscraftxray:blocks/xray_injector" }
 }

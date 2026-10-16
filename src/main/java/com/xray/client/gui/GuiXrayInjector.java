@@ -2,6 +2,7 @@ package com.xray.client.gui;
 
 import com.xray.injector.ContainerXrayInjector;
 import com.xray.injector.TileXrayInjector;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -27,8 +28,8 @@ public class GuiXrayInjector extends GuiContainer {
 
     @Override public void initGui() {
         super.initGui();
-        buttonList.add(new GuiButton(0, guiLeft + 57, guiTop + 21, 29, 16, I18n.format("gui.rioutouscraftxray.inject")));
-        buttonList.add(new GuiButton(1, guiLeft + 57, guiTop + 40, 29, 16, I18n.format("gui.rioutouscraftxray.clear")));
+        buttonList.add(new StyledButton(0, guiLeft + 57, guiTop + 21, 29, 16, I18n.format("gui.rioutouscraftxray.inject")));
+        buttonList.add(new StyledButton(1, guiLeft + 57, guiTop + 40, 29, 16, I18n.format("gui.rioutouscraftxray.clear")));
         rebuildTargetButtons();
     }
 
@@ -41,7 +42,7 @@ public class GuiXrayInjector extends GuiContainer {
             String state = targets.get(i);
             state = shortTarget(state);
             String prefix = container.tile.getSelectedTarget() == i ? ">" : "";
-            buttonList.add(new GuiButton(100 + i, guiLeft + 86, guiTop + 19 + i * 9,
+            buttonList.add(new StyledButton(100 + i, guiLeft + 86, guiTop + 19 + i * 9,
                     47, 10, prefix + (i + 1) + ":" + state));
         }
     }
@@ -69,9 +70,10 @@ public class GuiXrayInjector extends GuiContainer {
     @Override protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = I18n.format("container.rioutouscraftxray.injector");
         fontRenderer.drawString(title, 97 - fontRenderer.getStringWidth(title) / 2, 7, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.energy", (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 50, 22, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 17, 38, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 36, 38, 0xD0D0D0);
+        fontRenderer.drawStringWithShadow(I18n.format("gui.rioutouscraftxray.energy_short",
+                compactEnergy(container.tile.getEnergy()), compactEnergy(TileXrayInjector.MAX_ENERGY)), 14, 28, 0xFFFFFF);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 14, 39, 0xD0D0D0);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 38, 39, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets"), 86, 8, 0xD0D0D0);
         if (container.tile.getTargets().isEmpty()) fontRenderer.drawString("-", 132, 8, 0x808080);
     }
@@ -80,21 +82,28 @@ public class GuiXrayInjector extends GuiContainer {
         drawDefaultBackground();
         mc.getTextureManager().bindTexture(BACKGROUND);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-        drawInventorySlotFrames();
         int height = MathHelper.ceil(14.0F * (float) container.tile.getEnergy() / TileXrayInjector.MAX_ENERGY);
         if (height > 0) drawRect(guiLeft + 19, guiTop + 38 - height, guiLeft + 33, guiTop + 38, 0xFF20D8FF);
     }
 
-    private void drawInventorySlotFrames() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) drawSlotFrame(17 + col * 18, 76 + row * 18);
-        }
-        for (int col = 0; col < 9; col++) drawSlotFrame(17 + col * 18, 130);
+    private static String compactEnergy(double energy) {
+        return ((int) energy / 1000) + "k";
     }
 
-    private void drawSlotFrame(int x, int y) {
-        drawRect(guiLeft + x - 1, guiTop + y - 1, guiLeft + x + 17, guiTop + y + 17, 0xFF111315);
-        drawRect(guiLeft + x, guiTop + y, guiLeft + x + 16, guiTop + y + 16, 0xFF4B5055);
-        drawRect(guiLeft + x + 1, guiTop + y + 1, guiLeft + x + 15, guiTop + y + 15, 0xFF292D31);
+    private static final class StyledButton extends GuiButton {
+        private StyledButton(int id, int x, int y, int width, int height, String text) {
+            super(id, x, y, width, height, text);
+        }
+
+        @Override public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+            if (!visible) return;
+            hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+            int fill = hovered ? 0xFF245C66 : 0xFF20292E;
+            drawRect(x, y, x + width, y + height, fill);
+            drawRect(x, y, x + width, y + 1, 0xFF6D9296);
+            drawRect(x, y + height - 1, x + width, y + height, 0xFF0A1012);
+            drawCenteredString(minecraft.fontRenderer, displayString, x + width / 2,
+                    y + Math.max(1, (height - 8) / 2), 0xFFE0FFFF);
+        }
     }
 }

@@ -24,9 +24,9 @@ public class ContainerXrayInjector extends Container {
             @Override public int getSlotStackLimit() { return 1; }
         });
         for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
-            addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, 17 + col * 18, 76 + row * 18));
+            addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, 17 + col * 18, 92 + row * 18));
         for (int col = 0; col < 9; col++)
-            addSlotToContainer(new Slot(playerInventory, col, 17 + col * 18, 130));
+            addSlotToContainer(new Slot(playerInventory, col, 17 + col * 18, 146));
         lastEnergy = tile.getField(0);
         lastSelected = tile.getField(1);
     }

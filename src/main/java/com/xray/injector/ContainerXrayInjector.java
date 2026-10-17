@@ -20,7 +20,8 @@ public class ContainerXrayInjector extends Container {
             @Override public int getSlotStackLimit() { return 1; }
         });
         addSlotToContainer(new Slot(tile, 1, 57, 43) {
-            @Override public boolean isItemValid(ItemStack stack) { return OreTargetUtil.isOre(stack); }
+            // The server performs the authoritative ore/config check when Inject is pressed.
+            @Override public boolean isItemValid(ItemStack stack) { return OreTargetUtil.isBlockItem(stack); }
             @Override public int getSlotStackLimit() { return 1; }
         });
         for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
@@ -73,7 +74,7 @@ public class ContainerXrayInjector extends Container {
             if (!mergeItemStack(stack, 2, inventorySlots.size(), true)) return ItemStack.EMPTY;
         } else if (stack.getItem() instanceof ItemXrayGlasses) {
             if (!mergeItemStack(stack, 0, 1, false)) return ItemStack.EMPTY;
-        } else if (OreTargetUtil.isOre(stack)) {
+        } else if (OreTargetUtil.isBlockItem(stack)) {
             if (!mergeItemStack(stack, 1, 2, false)) return ItemStack.EMPTY;
         } else {
             return ItemStack.EMPTY;

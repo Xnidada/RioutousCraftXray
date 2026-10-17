@@ -21,7 +21,7 @@ public class Configuration
 
     @Config.Name("Additional ore blocks")
     @Config.Comment({
-            "Block registry IDs accepted by the injector when a mod does not provide an OreDictionary entry.",
+            "Server-side block registry IDs accepted by the injector when a mod does not provide an OreDictionary entry.",
             "Use modid:block or modid:block:metadata; metadata may be * for every variant."
     })
     public static String[] additionalOreBlocks = {};

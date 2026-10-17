@@ -15,10 +15,13 @@ import java.util.Locale;
 public final class OreTargetUtil {
     private OreTargetUtil() {}
 
+    public static boolean isBlockItem(ItemStack stack) {
+        return stack != null && !stack.isEmpty()
+                && Block.getBlockFromItem(stack.getItem()) != Blocks.AIR;
+    }
+
     public static boolean isOre(ItemStack stack) {
-        if (stack == null || stack.isEmpty()) return false;
-        Block block = Block.getBlockFromItem(stack.getItem());
-        if (block == Blocks.AIR) return false;
+        if (!isBlockItem(stack)) return false;
         ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
         if (id == null) return false;
 

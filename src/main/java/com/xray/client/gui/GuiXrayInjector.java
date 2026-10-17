@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class GuiXrayInjector extends GuiContainer {
+    private static final int MAX_TARGET_BUTTONS = 8;
     private final ContainerXrayInjector container;
     private int targetCount = -1;
     private int selectedTarget = -1;
@@ -35,7 +36,7 @@ public class GuiXrayInjector extends GuiContainer {
         List<String> targets = container.tile.getTargets();
         targetCount = targets.size();
         selectedTarget = container.tile.getSelectedTarget();
-        for (int i = 0; i < targets.size(); i++) {
+        for (int i = 0; i < Math.min(MAX_TARGET_BUTTONS, targets.size()); i++) {
             String state = targets.get(i);
             state = shortTarget(state);
             String prefix = container.tile.getSelectedTarget() == i ? ">" : "";
@@ -76,8 +77,8 @@ public class GuiXrayInjector extends GuiContainer {
                 (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 8, 20, 0xFFFFFF);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 8, 34, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 30, 34, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets"), 101, 7, 0xD0D0D0);
-        if (container.tile.getTargets().isEmpty()) fontRenderer.drawString("-", 158, 7, 0x808080);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets",
+                container.tile.getTargets().size(), container.tile.getTargetLimit()), 101, 7, 0xD0D0D0);
     }
 
     @Override protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {

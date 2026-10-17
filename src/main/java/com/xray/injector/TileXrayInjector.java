@@ -67,6 +67,11 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
                 : java.util.Collections.<String>emptyList();
     }
 
+    public int getTargetLimit() {
+        ItemStack stack = inventory.getStackInSlot(0);
+        return stack.getItem() instanceof ItemXrayGlasses ? ((ItemXrayGlasses) stack.getItem()).slots : 0;
+    }
+
     public boolean injectOre(EntityPlayer player) {
         if (world == null || world.isRemote) return false;
         ItemStack glassesStack = inventory.getStackInSlot(0);

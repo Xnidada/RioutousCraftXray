@@ -10,6 +10,6 @@ container.rioutouscraftxray.injector=X-Ray Injector
 gui.rioutouscraftxray.glasses=Glass
 gui.rioutouscraftxray.ore=Ore
 gui.rioutouscraftxray.energy_short=%s / %s
-gui.rioutouscraftxray.targets=Injected ORE
+gui.rioutouscraftxray.targets=ORE %s/%s
 gui.rioutouscraftxray.inject=Inject
 gui.rioutouscraftxray.clear=Clear

@@ -1,6 +1,7 @@
 package com.xray.injector;
 
 import com.xray.item.ItemXrayGlasses;
+import ic2.api.energy.EnergyNet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -33,7 +34,7 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
 
     @Override public void onLoad() {
         super.onLoad();
-        if (!world.isRemote) addedToEnergyNet = !MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) this));
+        if (!world.isRemote) registerEnergyNet();
     }
 
     @Override public void onChunkUnload() {
@@ -48,8 +49,25 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
 
     private void unloadFromEnergyNet() {
         if (addedToEnergyNet) {
-            MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) this));
+            boolean cancelled = MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) this));
+            if (cancelled && EnergyNet.instance != null) {
+                try {
+                    EnergyNet.instance.removeTile(this);
+                } catch (RuntimeException ignored) { }
+            }
             addedToEnergyNet = false;
+        }
+    }
+
+    private void registerEnergyNet() {
+        if (addedToEnergyNet) return;
+        boolean cancelled = MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) this));
+        addedToEnergyNet = !cancelled;
+        if (!addedToEnergyNet && EnergyNet.instance != null) {
+            try {
+                EnergyNet.instance.addTile(this);
+                addedToEnergyNet = true;
+            } catch (RuntimeException ignored) { }
         }
     }
 
@@ -109,7 +127,8 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
     }
 
     @Override public double getDemandedEnergy() { return Math.max(0, MAX_ENERGY - energy); }
-    @Override public int getSinkTier() { return 3; }
+    /** Accept every IC2 voltage tier; the injector still caps stored energy at 10,000 EU. */
+    @Override public int getSinkTier() { return 14; }
     @Override public double injectEnergy(EnumFacing direction, double amount, double voltage) {
         double accepted = Math.min(getDemandedEnergy(), Math.max(0, amount));
         energy += accepted;

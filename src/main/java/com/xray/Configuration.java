@@ -6,7 +6,6 @@ import net.minecraftforge.common.config.Config;
 @Config(modid = Reference.MOD_ID, name = "rioutouscraftxray", type = Config.Type.INSTANCE)
 public class Configuration
 {
-    public static final int TIER_COUNT = 6;
     private static final int[] DEFAULT_RADIUS = {4, 6, 8, 12, 14, 16};
     private static final int[] DEFAULT_ENERGY_PER_SECOND = {100, 100, 100, 100, 100, 100};
     private static final int[] DEFAULT_CAPACITY = {30000, 60000, 100000, 150000, 200000, 300000};
@@ -78,7 +77,7 @@ public class Configuration
     }
 
     private static int[] normalize(int[] values, int[] defaults, int minimum) {
-        int[] result = values == null || values.length != TIER_COUNT ? defaults.clone() : values.clone();
+        int[] result = values == null || values.length != defaults.length ? defaults.clone() : values.clone();
         for (int i = 0; i < result.length; i++) result[i] = Math.max(minimum, result[i]);
         return result;
     }

@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /** Server snapshot used to update client-side display and scan values. */
 public class ConfigSyncMessage implements IMessage {
+    private static final int TIER_COUNT = 6;
     public int injectorMaxEnergy;
     public int injectorActionCost;
     public int[] radius;
@@ -46,11 +47,11 @@ public class ConfigSyncMessage implements IMessage {
     }
 
     private static void writeArray(ByteBuf buffer, int[] values) {
-        for (int i = 0; i < Configuration.TIER_COUNT; i++) buffer.writeInt(values[i]);
+        for (int i = 0; i < TIER_COUNT; i++) buffer.writeInt(values[i]);
     }
 
     private static int[] readArray(ByteBuf buffer) {
-        int[] values = new int[Configuration.TIER_COUNT];
+        int[] values = new int[TIER_COUNT];
         for (int i = 0; i < values.length; i++) values[i] = buffer.readInt();
         return values;
     }

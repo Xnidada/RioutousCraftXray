@@ -7,7 +7,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -32,7 +31,7 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
         super(ArmorMaterial.IRON, 0, EntityEquipmentSlot.HEAD);
         this.tier = tier; this.capacity = capacity; this.radius = radius; this.slots = slots;
         setMaxStackSize(1);
-        setCreativeTab(CreativeTabs.COMBAT);
+        setCreativeTab(ModCreativeTab.TAB);
         setRegistryName(new ResourceLocation(Reference.MOD_ID, "glasses_l" + tier));
         setUnlocalizedName("rioutouscraftxray.glasses_l" + tier);
     }

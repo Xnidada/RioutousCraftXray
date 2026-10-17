@@ -8,7 +8,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 public final class ModItems {
     public static final ItemBlock XRAY_INJECTOR = (ItemBlock) new ItemBlock(ModBlocks.XRAY_INJECTOR)
-            .setRegistryName(ModBlocks.XRAY_INJECTOR.getRegistryName());
+            .setRegistryName(ModBlocks.XRAY_INJECTOR.getRegistryName())
+            .setCreativeTab(ModCreativeTab.TAB);
     public static final ItemXrayGlasses[] GLASSES = {
         new ItemXrayGlasses(1, 30000, 4, 1), new ItemXrayGlasses(2, 60000, 6, 2),
         new ItemXrayGlasses(3, 100000, 8, 3), new ItemXrayGlasses(4, 150000, 12, 4),

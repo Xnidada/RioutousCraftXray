@@ -21,7 +21,7 @@ import java.util.List;
 
 /** Server-authoritative ORE injector and IC2 EU sink. */
 public class TileXrayInjector extends TileEntity implements IInventory, IEnergySink {
-    public static final int ACTION_COST = 10000;
+    public static final int ACTION_COST = 2500;
     public static final int MAX_ENERGY = 10000;
 
     private final InventoryBasic inventory = new InventoryBasic("container.rioutouscraftxray.injector", false, 2);

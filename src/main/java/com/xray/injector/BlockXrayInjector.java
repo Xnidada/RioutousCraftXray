@@ -1,6 +1,7 @@
 package com.xray.injector;
 
 import com.xray.XRay;
+import com.xray.item.ModCreativeTab;
 import com.xray.reference.Reference;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -22,7 +23,7 @@ public class BlockXrayInjector extends BlockContainer {
         super(Material.IRON);
         setRegistryName(new ResourceLocation(Reference.MOD_ID, "xray_injector"));
         setUnlocalizedName("rioutouscraftxray.xray_injector");
-        setCreativeTab(net.minecraft.creativetab.CreativeTabs.REDSTONE);
+        setCreativeTab(ModCreativeTab.TAB);
         setHardness(3.5F);
         setResistance(10.0F);
         setSoundType(SoundType.METAL);

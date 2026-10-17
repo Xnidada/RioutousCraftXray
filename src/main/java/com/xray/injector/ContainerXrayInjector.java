@@ -15,18 +15,18 @@ public class ContainerXrayInjector extends Container {
 
     public ContainerXrayInjector(InventoryPlayer playerInventory, TileXrayInjector tile) {
         this.tile = tile;
-        addSlotToContainer(new Slot(tile, 0, 17, 47) {
+        addSlotToContainer(new Slot(tile, 0, 8, 41) {
             @Override public boolean isItemValid(ItemStack stack) { return stack.getItem() instanceof ItemXrayGlasses; }
             @Override public int getSlotStackLimit() { return 1; }
         });
-        addSlotToContainer(new Slot(tile, 1, 36, 47) {
+        addSlotToContainer(new Slot(tile, 1, 30, 41) {
             @Override public boolean isItemValid(ItemStack stack) { return OreTargetUtil.isOre(stack); }
             @Override public int getSlotStackLimit() { return 1; }
         });
         for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
-            addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, 17 + col * 18, 92 + row * 18));
+            addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
         for (int col = 0; col < 9; col++)
-            addSlotToContainer(new Slot(playerInventory, col, 17 + col * 18, 146));
+            addSlotToContainer(new Slot(playerInventory, col, 8 + col * 18, 142));
         lastEnergy = tile.getField(0);
         lastSelected = tile.getField(1);
     }

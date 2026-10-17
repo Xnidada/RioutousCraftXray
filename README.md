@@ -8,6 +8,8 @@ The glasses are configured in the X-Ray Injector; they are no longer configured 
 
 The X-Ray Injector block is used to configure glasses. Insert glasses and an ORE item, charge the machine with IC2 EU, then use **Inject ORE** or **Clear ORE**. Items tagged with a Forge OreDictionary name beginning with `ore` are accepted, as are registry IDs containing `ore`; untagged blocks can be added to the server's `Additional ore blocks` config as `modid:block` or `modid:block:metadata`. The server is authoritative; the client only filters the slot to block items. Each operation costs 2,500 EU and the server enforces the tier target limit; once the limit is full, clear a selected target before injecting another.
 
+The server config file is `config/rioutouscraftxray.cfg`. `Glasses radius`, `Glasses EU per second`, `Glasses capacity`, and `Glasses target slots` each use six values in L1-to-L6 order. `Injector maximum EU` and `Injector action cost` control the injector. These values are sent to clients when they join or open the injector, so client config values do not override the server.
+
 Build with JDK 8 and ForgeGradle:
 
 ```bash

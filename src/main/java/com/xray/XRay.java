@@ -1,6 +1,7 @@
 package com.xray;
 
 import com.xray.item.ModItems;
+import com.xray.network.NetworkHandler;
 import com.xray.injector.ModBlocks;
 import com.xray.proxy.CommonProxy;
 import com.xray.reference.Reference;
@@ -16,6 +17,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(
         modid = Reference.MOD_ID,
@@ -43,6 +46,11 @@ public class XRay {
 
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (Reference.MOD_ID.equals(event.getModID())) ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
+        if (Reference.MOD_ID.equals(event.getModID())) {
+            ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
+            Configuration.sanitize();
+            ModItems.applyConfig();
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) NetworkHandler.broadcast();
+        }
     }
 }

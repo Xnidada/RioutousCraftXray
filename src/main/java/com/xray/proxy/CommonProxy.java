@@ -1,18 +1,26 @@
 package com.xray.proxy;
 
+import com.xray.Configuration;
 import com.xray.item.ModItems;
 import com.xray.injector.InjectorGuiHandler;
 import com.xray.injector.ModBlocks;
 import com.xray.injector.TileXrayInjector;
+import com.xray.network.NetworkHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 
 public class CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
+        ConfigManager.sync(com.xray.reference.Reference.MOD_ID, Config.Type.INSTANCE);
+        Configuration.sanitize();
+        NetworkHandler.init();
+        ModItems.applyConfig();
         // RegistryEvent is the normal path; this idempotent call also covers
         // launchers that fail to inject static registry subscribers.
         ModBlocks.register(ForgeRegistries.BLOCKS);

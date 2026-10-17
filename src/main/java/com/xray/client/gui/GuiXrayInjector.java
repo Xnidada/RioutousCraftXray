@@ -74,7 +74,7 @@ public class GuiXrayInjector extends GuiContainer {
         String title = I18n.format("container.rioutouscraftxray.injector");
         fontRenderer.drawString(title, xSize / 2 - 36 - fontRenderer.getStringWidth(title) / 2, 4, 0xE0E0E0);
         fontRenderer.drawStringWithShadow(I18n.format("gui.rioutouscraftxray.energy_short",
-                (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 19, 20, 0xFFFFFF);
+                (int) container.tile.getEnergy(), TileXrayInjector.getMaxEnergy()), 19, 20, 0xFFFFFF);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 14, 34, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 57, 34, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets",

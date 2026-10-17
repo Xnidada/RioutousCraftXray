@@ -1,5 +1,6 @@
 package com.xray.item;
 
+import com.xray.Configuration;
 import com.xray.injector.ModBlocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -15,6 +16,13 @@ public final class ModItems {
         new ItemXrayGlasses(3, 100000, 8, 3), new ItemXrayGlasses(4, 150000, 12, 4),
         new ItemXrayGlasses(5, 200000, 14, 6), new ItemXrayGlasses(6, 300000, 16, 8)
     };
+    public static void applyConfig() {
+        Configuration.sanitize();
+        for (int i = 0; i < GLASSES.length; i++) {
+            GLASSES[i].applyConfig(Configuration.glassesCapacity[i], Configuration.glassesRadius[i],
+                    Configuration.glassesTargetSlots[i], Configuration.glassesEnergyPerSecond[i]);
+        }
+    }
     @SubscribeEvent public static void register(RegistryEvent.Register<Item> e) { register(e.getRegistry()); }
     /** Idempotent fallback for launchers that do not inject registry subscribers correctly. */
     public static void register(IForgeRegistry<Item> registry) {

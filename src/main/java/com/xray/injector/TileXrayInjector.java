@@ -1,6 +1,7 @@
 package com.xray.injector;
 
 import com.xray.item.ItemXrayGlasses;
+import com.xray.Configuration;
 import ic2.api.energy.EnergyNet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -22,8 +23,8 @@ import java.util.List;
 
 /** Server-authoritative ORE injector and IC2 EU sink. */
 public class TileXrayInjector extends TileEntity implements IInventory, IEnergySink {
-    public static final int ACTION_COST = 2500;
-    public static final int MAX_ENERGY = 10000;
+    public static int getActionCost() { Configuration.sanitize(); return Configuration.injectorActionCost; }
+    public static int getMaxEnergy() { Configuration.sanitize(); return Configuration.injectorMaxEnergy; }
 
     private final InventoryBasic inventory = new InventoryBasic("container.rioutouscraftxray.injector", false, 2);
     private double energy;
@@ -112,21 +113,21 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
         ItemStack glassesStack = inventory.getStackInSlot(0);
         if (!(glassesStack.getItem() instanceof ItemXrayGlasses)) return false;
         ItemXrayGlasses glasses = (ItemXrayGlasses) glassesStack.getItem();
-        if (energy < ACTION_COST || !glasses.removeTarget(glassesStack, selectedTarget)) return false;
-        energy -= ACTION_COST;
+        if (energy < getActionCost() || !glasses.removeTarget(glassesStack, selectedTarget)) return false;
+        energy -= getActionCost();
         selectedTarget = Math.min(selectedTarget, Math.max(0, glasses.getTargetCount(glassesStack) - 1));
         markDirty();
         return true;
     }
 
     private boolean consumeEnergy() {
-        if (energy < ACTION_COST) return false;
-        energy -= ACTION_COST;
+        if (energy < getActionCost()) return false;
+        energy -= getActionCost();
         markDirty();
         return true;
     }
 
-    @Override public double getDemandedEnergy() { return Math.max(0, MAX_ENERGY - energy); }
+    @Override public double getDemandedEnergy() { return Math.max(0, getMaxEnergy() - energy); }
     /** Accept every IC2 voltage tier; the injector still caps stored energy at 10,000 EU. */
     @Override public int getSinkTier() { return 14; }
     @Override public double injectEnergy(EnumFacing direction, double amount, double voltage) {
@@ -139,7 +140,7 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
 
     @Override public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        energy = Math.max(0, Math.min(MAX_ENERGY, tag.getDouble("Energy")));
+        energy = Math.max(0, Math.min(getMaxEnergy(), tag.getDouble("Energy")));
         selectedTarget = Math.max(0, tag.getInteger("SelectedTarget"));
         for (int i = 0; i < 2; i++) {
             String key = "Slot" + i;

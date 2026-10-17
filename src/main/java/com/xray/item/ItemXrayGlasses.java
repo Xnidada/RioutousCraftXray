@@ -21,7 +21,8 @@ import java.util.ArrayList;
 
 /** Six server-authoritative tiers of powered X-Ray glasses. Energy is stored in EU. */
 public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
-    public final int tier, capacity, radius, slots;
+    public final int tier;
+    public volatile int capacity, radius, slots, energyPerSecond;
     /** IC2's ElectricItemManager uses this exact NBT key. */
     private static final String ENERGY = "charge";
     private static final String LEGACY_ENERGY = "Energy";
@@ -34,6 +35,13 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
         setCreativeTab(ModCreativeTab.TAB);
         setRegistryName(new ResourceLocation(Reference.MOD_ID, "glasses_l" + tier));
         setUnlocalizedName("rioutouscraftxray.glasses_l" + tier);
+    }
+
+    public void applyConfig(int capacity, int radius, int slots, int energyPerSecond) {
+        this.capacity = Math.max(1, capacity);
+        this.radius = Math.max(1, radius);
+        this.slots = Math.max(1, slots);
+        this.energyPerSecond = Math.max(1, energyPerSecond);
     }
 
     public int getEnergy(ItemStack stack) {
@@ -103,7 +111,7 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
         stack.getTagCompound().setString(TARGET, state);
     }
     public boolean consume(ItemStack stack, int eu) { int e = getEnergy(stack); if (e < eu) return false; setEnergy(stack, e - eu); return true; }
-    public boolean isUsable(ItemStack stack) { return getEnergy(stack) >= 100 && hasConfiguredTargets(stack); }
+    public boolean isUsable(ItemStack stack) { return getEnergy(stack) >= energyPerSecond && hasConfiguredTargets(stack); }
 
     @Override public boolean canProvideEnergy(ItemStack stack) { return false; }
     @Override public double getMaxCharge(ItemStack stack) { return capacity; }
@@ -137,7 +145,7 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
             if (energy < capacity) {
                 setEnergy(stack, energy + IC2EnergyBridge.pullFromInventory(player, Math.min(10000, capacity - energy)));
             }
-            if (isUsable(stack)) consume(stack, 100);
+            if (isUsable(stack)) consume(stack, energyPerSecond);
         }
     }
 }

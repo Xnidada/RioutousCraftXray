@@ -58,6 +58,11 @@ public class GuiXrayInjector extends GuiContainer {
                 || selectedTarget != container.tile.getSelectedTarget()) rebuildTargetButtons();
     }
 
+    @Override public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
+
     @Override protected void actionPerformed(GuiButton button) throws IOException {
         if ((button.id >= 0 && button.id <= 1) || button.id >= 100) {
             mc.playerController.sendEnchantPacket(inventorySlots.windowId, button.id);
@@ -68,7 +73,7 @@ public class GuiXrayInjector extends GuiContainer {
         String title = I18n.format("container.rioutouscraftxray.injector");
         fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 0xE0E0E0);
         fontRenderer.drawStringWithShadow(I18n.format("gui.rioutouscraftxray.energy_short",
-                compactEnergy(container.tile.getEnergy()), compactEnergy(TileXrayInjector.MAX_ENERGY)), 8, 20, 0xFFFFFF);
+                (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 8, 20, 0xFFFFFF);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 8, 34, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 30, 34, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets"), 101, 7, 0xD0D0D0);
@@ -107,10 +112,6 @@ public class GuiXrayInjector extends GuiContainer {
         drawRect(x - 1, y - 1, x + 17, y + 17, 0xFF111111);
         drawRect(x, y, x + 16, y + 16, 0xFF8B8B8B);
         drawRect(x + 1, y + 1, x + 15, y + 15, 0xFF373737);
-    }
-
-    private static String compactEnergy(double energy) {
-        return ((int) energy / 1000) + "k";
     }
 
     private static final class StyledButton extends GuiButton {

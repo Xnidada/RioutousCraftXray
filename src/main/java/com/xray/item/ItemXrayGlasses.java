@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
@@ -51,8 +52,15 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
     }
     public String getTarget(ItemStack stack) { return stack.hasTagCompound() ? stack.getTagCompound().getString(TARGET) : ""; }
     public boolean hasTarget(ItemStack stack, String state) {
-        for (String target : getTargets(stack)) if (state.equals(target)) return true;
+        String blockId = blockId(state);
+        for (String target : getTargets(stack)) {
+            if (state.equals(target) || blockId.equals(blockId(target))) return true;
+        }
         return false;
+    }
+    private static String blockId(String state) {
+        int bracket = state.indexOf('[');
+        return bracket < 0 ? state : state.substring(0, bracket);
     }
     public boolean hasConfiguredTargets(ItemStack stack) {
         return !getTargets(stack).isEmpty();
@@ -117,8 +125,11 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
     @Override public int getRGBDurabilityForDisplay(ItemStack stack) { return 0x20D8FF; }
     @SideOnly(Side.CLIENT)
     @Override public void addInformation(ItemStack stack, net.minecraft.world.World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextFormatting.AQUA + I18n.format("item.rioutouscraftxray.energy", getEnergy(stack), capacity));
         tooltip.add(TextFormatting.GRAY + I18n.format("item.rioutouscraftxray.stats", tier, radius, radius, slots));
+    }
+
+    @Override public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+        return Reference.MOD_ID + ":textures/models/armor/glasses_l" + tier + "_layer_1.png";
     }
 
     @Override public void onArmorTick(net.minecraft.world.World world, EntityPlayer player, ItemStack stack) {

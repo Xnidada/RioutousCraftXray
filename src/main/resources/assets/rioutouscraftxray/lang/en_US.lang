@@ -1,10 +1,9 @@
-item.rioutouscraftxray.glasses_l1.name=RioutousCraft X-Ray Glasses L1
-item.rioutouscraftxray.glasses_l2.name=RioutousCraft X-Ray Glasses L2
-item.rioutouscraftxray.glasses_l3.name=RioutousCraft X-Ray Glasses L3
-item.rioutouscraftxray.glasses_l4.name=RioutousCraft X-Ray Glasses L4
-item.rioutouscraftxray.glasses_l5.name=RioutousCraft X-Ray Glasses L5
-item.rioutouscraftxray.glasses_l6.name=RioutousCraft X-Ray Glasses L6
-item.rioutouscraftxray.energy=Energy: %s / %s EU
+item.rioutouscraftxray.glasses_l1.name=X-Ray Glasses L1
+item.rioutouscraftxray.glasses_l2.name=X-Ray Glasses L2
+item.rioutouscraftxray.glasses_l3.name=X-Ray Glasses L3
+item.rioutouscraftxray.glasses_l4.name=X-Ray Glasses L4
+item.rioutouscraftxray.glasses_l5.name=X-Ray Glasses L5
+item.rioutouscraftxray.glasses_l6.name=X-Ray Glasses L6
 item.rioutouscraftxray.stats=L%s  Range: %sx%s  Targets: %s blocks
 tile.rioutouscraftxray.xray_injector.name=X-Ray Injector
 container.rioutouscraftxray.injector=X-Ray Injector

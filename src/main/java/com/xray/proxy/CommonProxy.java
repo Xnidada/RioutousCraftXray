@@ -5,7 +5,6 @@ import com.xray.injector.InjectorGuiHandler;
 import com.xray.injector.ModBlocks;
 import com.xray.injector.TileXrayInjector;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -23,7 +22,6 @@ public class CommonProxy {
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(com.xray.XRay.instance, new InjectorGuiHandler());
     }
-    public void postInit(FMLPostInitializationEvent event) {}
     public void onServerStopping(FMLServerStoppingEvent event) {}
     public Object getClientGuiElement(int id, net.minecraft.entity.player.EntityPlayer player,
                                       net.minecraft.world.World world, int x, int y, int z) { return null; }

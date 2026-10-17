@@ -11,7 +11,6 @@ container.rioutouscraftxray.injector=透视注入器
 gui.rioutouscraftxray.glasses=眼镜
 gui.rioutouscraftxray.ore=矿物
 gui.rioutouscraftxray.energy_short=%s / %s
-gui.rioutouscraftxray.energy=机器电量：%s / %s EU
 gui.rioutouscraftxray.targets=已注入的矿物
 gui.rioutouscraftxray.inject=注入
 gui.rioutouscraftxray.clear=清除

@@ -20,7 +20,7 @@ If applicable (delete if not), add screenshots to help explain your problem.
 
 **Minecraft Enviorment**
  - Minecraft Version: [eg: 1.12.2]
- - XRay Mod Version: [eg: 1.5.0]
+ - RioutousCraftXray Version: [eg: 1.0.11]
  - Mod Pack & Version if applicable
  - Forge Version if applicable
 

@@ -11,5 +11,9 @@ The X-Ray Injector block is used to configure glasses. Insert glasses and an ORE
 Build with JDK 8 and ForgeGradle:
 
 ```bash
-gradle build
+JAVA_HOME=/opt/minecraft-tools/jdk8 /tmp/gradle/gradle-4.9/bin/gradle --no-daemon --offline -Dnet.minecraftforge.gradle.test_certs=false clean build
 ```
+
+The resulting re-obfuscated mod jar is written to `build/libs/`.
+
+This project is licensed under GPLv3. The original Advanced XRay attribution is retained in the license and mod metadata.

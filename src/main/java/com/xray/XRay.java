@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,7 +21,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
         modid = Reference.MOD_ID,
         name = Reference.MOD_NAME,
         version = Reference.MOD_VERSION,
-        updateJSON = Reference.UPDATE_JSON,
         dependencies = "required-after:ic2@[2.8.222,)"
 )
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -41,7 +39,6 @@ public class XRay {
 
     @EventHandler public void preInit(FMLPreInitializationEvent event) { proxy.preInit(event); }
     @EventHandler public void init(FMLInitializationEvent event) { proxy.init(event); }
-    @EventHandler public void postInit(FMLPostInitializationEvent event) { proxy.postInit(event); }
     @EventHandler public void onServerStopping(FMLServerStoppingEvent event) { proxy.onServerStopping(event); }
 
     @SubscribeEvent

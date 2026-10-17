@@ -50,10 +50,6 @@ public class ItemXrayGlasses extends ItemArmor implements IElectricItem {
         tag.removeTag(LEGACY_ENERGY);
     }
     public String getTarget(ItemStack stack) { return stack.hasTagCompound() ? stack.getTagCompound().getString(TARGET) : ""; }
-    public void setTarget(ItemStack stack, String state) {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound().setString(TARGET, state);
-    }
     public boolean hasTarget(ItemStack stack, String state) {
         for (String target : getTargets(stack)) if (state.equals(target)) return true;
         return false;

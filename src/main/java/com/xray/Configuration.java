@@ -8,16 +8,13 @@ public class Configuration
 {
     @Config.Name("Fading Affect")
     @Config.Comment({
-            "By default the blocks will begin to fade out as you get further away, some may not like this as",
-            "it can sometime causes things not to show. If you're a dirty cheater (lol) then you may want",
-            "to disable this as you won't be able to see chests out of your range."
+            "Fade outlines as they get farther from the player."
     })
     public static boolean shouldFade = true;
 
     @Config.Name("Outline thickness")
     @Config.Comment({
-            "This allows you to set your own outline thickness, I find that 1.0 is perfect but others my",
-            "think differently. The max is 5.0"
+            "Set the thickness of the X-Ray block outlines."
     })
     @Config.RangeDouble(min = 0.5, max = 5.0)
     public static double outlineThickness = 1f;

@@ -2,7 +2,6 @@ package com.xray.xray;
 
 import com.xray.Configuration;
 import com.xray.reference.block.BlockInfo;
-import com.xray.utils.Utils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -44,67 +43,76 @@ public class Render
 	{
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        Profile.BLOCKS.apply(); // Sets GL state for block drawing
+		beginBlockOutlines();
         try {
             buffer.setTranslation( -playerX, -playerY, -playerZ );
 
 		    synchronized (ores) {
 			    for (BlockInfo b : ores) {
 				    buffer.begin( GL_LINES, DefaultVertexFormats.POSITION_COLOR );
-				    Utils.renderBlockBounding( buffer, b, (int) b.alpha );
+				    renderBlockBounding(buffer, b, (int) b.alpha);
 				    tessellator.draw();
 			        }
 		    }
         } finally {
             buffer.setTranslation( 0, 0, 0 );
-            Profile.BLOCKS.clean();
+			endBlockOutlines();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableLighting();
             GlStateManager.enableCull();
         }
 	}
 
-    /**
-     * OpenGL Profiles used for rendering blocks and entities
-     */
-    private enum Profile
-    {
-        BLOCKS {
-            @Override
-            public void apply()
-            {
-                GlStateManager.disableTexture2D();
-                GlStateManager.disableDepth();
-                GlStateManager.depthMask( false );
-                GlStateManager.glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-                GlStateManager.blendFunc( GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA );
-                GlStateManager.enableBlend();
-                GlStateManager.glLineWidth( (float) Configuration.outlineThickness );
-            }
+	private static void beginBlockOutlines() {
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+		GlStateManager.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
+				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		GlStateManager.enableBlend();
+		GlStateManager.glLineWidth((float) Configuration.outlineThickness);
+	}
 
-            @Override
-            public void clean()
-            {
-                GlStateManager.glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-                GlStateManager.disableBlend();
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask( true );
-                GlStateManager.enableTexture2D();
-            }
-        },
-        // TODO:
-        ENTITIES {
-            @Override
-            public void apply()
-            {}
+	private static void endBlockOutlines() {
+		GlStateManager.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		GlStateManager.disableBlend();
+		GlStateManager.enableDepth();
+		GlStateManager.depthMask(true);
+		GlStateManager.enableTexture2D();
+	}
 
-            @Override
-            public void clean()
-            {}
-        };
+	private static void renderBlockBounding(BufferBuilder buffer, BlockInfo b, int opacity) {
+		if (b == null) return;
+		final float size = 1.0f;
+		int red = b.color[0], green = b.color[1], blue = b.color[2];
+		int x = b.getX(), y = b.getY(), z = b.getZ();
 
-        private Profile() {}
-        public abstract void apply();
-        public abstract void clean();
-    }
+		buffer.pos(x, y + size, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y + size, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y + size, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y + size, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y + size, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y + size, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y + size, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y + size, z).color(red, green, blue, opacity).endVertex();
+
+		buffer.pos(x + size, y, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y, z).color(red, green, blue, opacity).endVertex();
+
+		buffer.pos(x + size, y, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y + size, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x + size, y + size, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y + size, z + size).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y, z).color(red, green, blue, opacity).endVertex();
+		buffer.pos(x, y + size, z).color(red, green, blue, opacity).endVertex();
+	}
 }

@@ -6,7 +6,7 @@ Six powered glasses tiers are registered (`glasses_l1`…`glasses_l6`). Wearing 
 
 The glasses are configured in the X-Ray Injector; they are no longer configured by a direct glasses+ORE crafting recipe.
 
-The X-Ray Injector block is used to configure glasses. Insert glasses and an ORE item, charge the machine with IC2 EU, then use **Inject ORE** or **Clear ORE**. Each operation costs 2,500 EU and the server enforces the tier target limit; once the limit is full, clear a selected target before injecting another.
+The X-Ray Injector block is used to configure glasses. Insert glasses and an ORE item, charge the machine with IC2 EU, then use **Inject ORE** or **Clear ORE**. Items tagged with a Forge OreDictionary name beginning with `ore` are accepted, as are registry IDs containing `ore`; untagged blocks can be added to the `Additional ore blocks` config as `modid:block` or `modid:block:metadata`. Each operation costs 2,500 EU and the server enforces the tier target limit; once the limit is full, clear a selected target before injecting another.
 
 Build with JDK 8 and ForgeGradle:
 

@@ -14,3 +14,4 @@ gui.rioutouscraftxray.energy_short=%s / %s
 gui.rioutouscraftxray.targets=注入矿物 %s/%s
 gui.rioutouscraftxray.inject=注入
 gui.rioutouscraftxray.clear=清除
+config.rioutouscraftxray.additionalOreBlocks=额外矿石方块

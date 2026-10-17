@@ -14,3 +14,4 @@ gui.rioutouscraftxray.energy_short=%s / %s
 gui.rioutouscraftxray.targets=ORE %s/%s
 gui.rioutouscraftxray.inject=Inject
 gui.rioutouscraftxray.clear=Clear
+config.rioutouscraftxray.additionalOreBlocks=Additional ore blocks

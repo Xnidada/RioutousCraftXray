@@ -18,4 +18,11 @@ public class Configuration
     })
     @Config.RangeDouble(min = 0.5, max = 5.0)
     public static double outlineThickness = 1f;
+
+    @Config.Name("Additional ore blocks")
+    @Config.Comment({
+            "Block registry IDs accepted by the injector when a mod does not provide an OreDictionary entry.",
+            "Use modid:block or modid:block:metadata; metadata may be * for every variant."
+    })
+    public static String[] additionalOreBlocks = {};
 }

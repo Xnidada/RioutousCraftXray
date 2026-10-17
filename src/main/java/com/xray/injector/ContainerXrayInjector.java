@@ -28,8 +28,11 @@ public class ContainerXrayInjector extends Container {
             addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
         for (int col = 0; col < 9; col++)
             addSlotToContainer(new Slot(playerInventory, col, 8 + col * 18, 142));
-        lastEnergy = tile.getField(0);
-        lastSelected = tile.getField(1);
+        // Force the first detectAndSendChanges call to synchronize the server
+        // values. Without this, a machine that was charged before the GUI was
+        // opened kept showing the client's initial 0 EU value.
+        lastEnergy = Integer.MIN_VALUE;
+        lastSelected = Integer.MIN_VALUE;
     }
 
     @Override public boolean canInteractWith(EntityPlayer player) { return tile.isUsableByPlayer(player); }

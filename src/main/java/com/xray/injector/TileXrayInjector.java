@@ -72,7 +72,10 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
         }
     }
 
-    public double getEnergy() { return energy; }
+    public double getEnergy() {
+        clampEnergy();
+        return energy;
+    }
     public int getSelectedTarget() { return selectedTarget; }
     public void setSelectedTarget(int value) {
         selectedTarget = Math.max(0, value);
@@ -127,20 +130,40 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
         return true;
     }
 
-    @Override public double getDemandedEnergy() { return Math.max(0, getMaxEnergy() - energy); }
-    /** Accept every IC2 voltage tier; the injector still caps stored energy at 10,000 EU. */
-    @Override public int getSinkTier() { return 14; }
+    @Override public double getDemandedEnergy() {
+        clampEnergy();
+        return Math.max(0, getMaxEnergy() - energy);
+    }
+
+    /**
+     * IC2's normal tiers stop at 14, but addon generators can advertise higher
+     * tiers. Tier 30 is IC2's highest finite power tier and prevents those
+     * packets from being treated as an overload; storage is still capped by the
+     * server-configured injector capacity.
+     */
+    @Override public int getSinkTier() { return 30; }
+
     @Override public double injectEnergy(EnumFacing direction, double amount, double voltage) {
+        clampEnergy();
+        if (!(amount > 0.0) || Double.isNaN(amount)) return 0.0;
         double accepted = Math.min(getDemandedEnergy(), Math.max(0, amount));
         energy += accepted;
+        clampEnergy();
         markDirty();
         return amount - accepted;
     }
     @Override public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) { return true; }
 
+    private void clampEnergy() {
+        if (Double.isNaN(energy) || energy < 0.0) energy = 0.0;
+        double capacity = getMaxEnergy();
+        if (Double.isInfinite(energy) || energy > capacity) energy = capacity;
+    }
+
     @Override public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        energy = Math.max(0, Math.min(getMaxEnergy(), tag.getDouble("Energy")));
+        energy = tag.getDouble("Energy");
+        clampEnergy();
         selectedTarget = Math.max(0, tag.getInteger("SelectedTarget"));
         for (int i = 0; i < 2; i++) {
             String key = "Slot" + i;
@@ -178,8 +201,8 @@ public class TileXrayInjector extends TileEntity implements IInventory, IEnergyS
         if (index == 0) return stack.getItem() instanceof ItemXrayGlasses;
         return index == 1 && OreTargetUtil.isOre(stack);
     }
-    @Override public int getField(int id) { return id == 0 ? (int) energy : selectedTarget; }
-    @Override public void setField(int id, int value) { if (id == 0) energy = value; else selectedTarget = Math.max(0, value); }
+    @Override public int getField(int id) { return id == 0 ? (int) getEnergy() : selectedTarget; }
+    @Override public void setField(int id, int value) { if (id == 0) { energy = value; clampEnergy(); } else selectedTarget = Math.max(0, value); }
     @Override public int getFieldCount() { return 2; }
     @Override public void clear() { inventory.clear(); }
     @Override public String getName() { return inventory.getName(); }

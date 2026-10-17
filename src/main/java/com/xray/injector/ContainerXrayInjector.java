@@ -15,11 +15,11 @@ public class ContainerXrayInjector extends Container {
 
     public ContainerXrayInjector(InventoryPlayer playerInventory, TileXrayInjector tile) {
         this.tile = tile;
-        addSlotToContainer(new Slot(tile, 0, 8, 41) {
+        addSlotToContainer(new Slot(tile, 0, 14, 43) {
             @Override public boolean isItemValid(ItemStack stack) { return stack.getItem() instanceof ItemXrayGlasses; }
             @Override public int getSlotStackLimit() { return 1; }
         });
-        addSlotToContainer(new Slot(tile, 1, 30, 41) {
+        addSlotToContainer(new Slot(tile, 1, 57, 43) {
             @Override public boolean isItemValid(ItemStack stack) { return OreTargetUtil.isOre(stack); }
             @Override public int getSlotStackLimit() { return 1; }
         });

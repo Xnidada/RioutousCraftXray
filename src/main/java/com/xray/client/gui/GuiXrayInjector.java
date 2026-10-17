@@ -26,8 +26,8 @@ public class GuiXrayInjector extends GuiContainer {
 
     @Override public void initGui() {
         super.initGui();
-        buttonList.add(new StyledButton(0, guiLeft + 8, guiTop + 61, 42, 18, I18n.format("gui.rioutouscraftxray.inject")));
-        buttonList.add(new StyledButton(1, guiLeft + 53, guiTop + 61, 42, 18, I18n.format("gui.rioutouscraftxray.clear")));
+        buttonList.add(new StyledButton(0, guiLeft + 7, guiTop + 65, 42, 14, I18n.format("gui.rioutouscraftxray.inject")));
+        buttonList.add(new StyledButton(1, guiLeft + 51, guiTop + 65, 42, 14, I18n.format("gui.rioutouscraftxray.clear")));
         rebuildTargetButtons();
     }
 
@@ -72,13 +72,13 @@ public class GuiXrayInjector extends GuiContainer {
 
     @Override protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = I18n.format("container.rioutouscraftxray.injector");
-        fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 0xE0E0E0);
+        fontRenderer.drawString(title, xSize / 2 - 36 - fontRenderer.getStringWidth(title) / 2, 4, 0xE0E0E0);
         fontRenderer.drawStringWithShadow(I18n.format("gui.rioutouscraftxray.energy_short",
-                (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 8, 20, 0xFFFFFF);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 8, 34, 0xD0D0D0);
-        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 30, 34, 0xD0D0D0);
+                (int) container.tile.getEnergy(), TileXrayInjector.MAX_ENERGY), 19, 20, 0xFFFFFF);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.glasses"), 14, 34, 0xD0D0D0);
+        fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.ore"), 57, 34, 0xD0D0D0);
         fontRenderer.drawString(I18n.format("gui.rioutouscraftxray.targets",
-                container.tile.getTargets().size(), container.tile.getTargetLimit()), 101, 7, 0xD0D0D0);
+                container.tile.getTargets().size(), container.tile.getTargetLimit()), 101, 4, 0xD0D0D0);
     }
 
     @Override protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
@@ -92,15 +92,12 @@ public class GuiXrayInjector extends GuiContainer {
         drawRect(guiLeft + 6, guiTop + 79, guiLeft + xSize - 6, guiTop + 81, 0xFF171717);
         drawPanel(guiLeft + 6, guiTop + 82, 164, 77);
 
-        drawSlotBackground(guiLeft + 8, guiTop + 41);
-        drawSlotBackground(guiLeft + 30, guiTop + 41);
+        drawSlotBackground(guiLeft + 14, guiTop + 43);
+        drawSlotBackground(guiLeft + 57, guiTop + 43);
         for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
             drawSlotBackground(guiLeft + 8 + col * 18, guiTop + 84 + row * 18);
         for (int col = 0; col < 9; col++) drawSlotBackground(guiLeft + 8 + col * 18, guiTop + 142);
 
-        int height = (int) (28.0F * container.tile.getEnergy() / TileXrayInjector.MAX_ENERGY);
-        drawRect(guiLeft + 82, guiTop + 34, guiLeft + 91, guiTop + 62, 0xFF111111);
-        if (height > 0) drawRect(guiLeft + 83, guiTop + 62 - height, guiLeft + 90, guiTop + 62, 0xFF20D8FF);
     }
 
     private void drawPanel(int x, int y, int width, int height) {
